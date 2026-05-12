@@ -6,8 +6,82 @@
 const WEBHOOK = process.env.GOOGLE_CHAT_WEBHOOK;
 
 /**
- * @param {Array} signals  array of signal objects from scanner
- * @param {string} runTime  ISO timestamp string
+ * Format a number with sign prefix (e.g. +2.3 or -1.5)
+ */
+function signed(n) {
+  if (n === null || n === undefined) return "n/a";
+  return (n > 0 ? "+" : "") + n;
+}
+
+/**
+ * Format IVR with fire emoji
+ */
+function formatIVR(ivr) {
+  if (ivr === null || ivr === undefined) return "n/a";
+  const label = ivr.toFixed(0);
+  if (ivr >= 75) return `${label} 🔥🔥`;
+  if (ivr >= 50) return `${label} 🔥`;
+  return label;
+}
+
+/**
+ * Format PCR with directional label
+ */
+function formatPCR(pcr, pcrSignal) {
+  if (pcr === null || pcr === undefined) return "n/a";
+  const label = pcr.toFixed(2);
+  if (pcrSignal === "CALL-HEAVY") return `${label} (call-heavy)`;
+  if (pcrSignal === "PUT-HEAVY")  return `${label} (put-heavy)`;
+  return label;
+}
+
+/**
+ * Build the text body for a single signal card.
+ */
+function buildSignalBlock(s, divider) {
+  const emoji   = s.direction === "CALL" ? "🟢" : "🔴";
+  const action  = s.direction === "CALL"
+    ? "Buy CALL (short-dated, 3-7 DTE)"
+    : "Buy PUT  (short-dated, 3-7 DTE)";
+
+  const scoreLabel = `${s.score > 0 ? "+" : ""}${s.score}`;
+  const earningsBadge = s.isEarningsPlay ? "  🚨 EARNINGS PLAY" : "";
+
+  const watchlistLabel = s.watchlists?.length
+    ? s.watchlists.join(", ")
+    : "—";
+
+  const lines = [
+    `${emoji} *${s.ticker}*  $${s.lastClose}  (${signed(s.dayChangePct)}%)${earningsBadge}`,
+    `   Direction  : *${s.direction}*   Score: *${scoreLabel} / 10*`,
+  ];
+
+  if (s.isEarningsPlay && s.daysToEarnings !== null) {
+    lines.push(`   🚨 Earnings : *${s.daysToEarnings} day(s) away* (${s.earningsNextDate})`);
+  }
+
+  lines.push(
+    `   IVR        : ${formatIVR(s.ivr)}`,
+    `   RSI        : ${s.rsi ?? "n/a"}`,
+    `   MACD hist  : ${s.macd?.hist ?? "n/a"}`,
+    `   Vol ratio  : ${s.volumeRatio ?? "n/a"}x`,
+    `   5d trend   : ${signed(s.momentum5dPct)}%`,
+    `   Beta / ATR : ${s.beta?.toFixed(1) ?? "n/a"} / ${s.atrPct?.toFixed(1) ?? "n/a"}%`,
+    `   Put/Call   : ${formatPCR(s.pcr, s.pcrSignal)}`,
+    `   Watchlists : ${watchlistLabel}`,
+    `   Reasons    : ${s.reasons.join(" | ")}`,
+    `   👉 ${action}`,
+    divider,
+  );
+
+  return lines.join("\n");
+}
+
+/**
+ * Send the ranked signal list to Google Chat.
+ *
+ * @param {Array}  signals  — ranked signal objects from scorer.js
+ * @param {string} runTime  — human-readable run timestamp
  */
 export async function sendGoogleChatAlert(signals, runTime) {
   if (!WEBHOOK) {
@@ -20,32 +94,20 @@ export async function sendGoogleChatAlert(signals, runTime) {
     return;
   }
 
-  // ── Build message text ────────────────────────────────
-  const header = `🔔 *Stock Scanner Alert* — ${runTime}\n${signals.length} signal(s) found\n`;
   const divider = "─────────────────────────────";
 
-  const blocks = signals.map(s => {
-    const emoji  = s.direction === "CALL" ? "🟢" : "🔴";
-    const action = s.direction === "CALL"
-      ? "Consider buying a CALL (DTE 1)"
-      : "Consider buying a PUT  (DTE 1)";
+  const callCount = signals.filter(s => s.direction === "CALL").length;
+  const putCount  = signals.filter(s => s.direction === "PUT").length;
 
-    return [
-      `${emoji} *${s.ticker}*  $${s.lastClose}  (${s.dayChangePct > 0 ? "+" : ""}${s.dayChangePct}%)`,
-      `   Direction : *${s.direction}*`,
-      `   Score     : ${s.score}`,
-      `   RSI       : ${s.rsi ?? "n/a"}`,
-      `   MACD hist : ${s.macd?.hist ?? "n/a"}`,
-      `   Vol ratio : ${s.volumeRatio ?? "n/a"}x`,
-      `   Reasons   : ${s.reasons.join(" | ")}`,
-      `   👉 ${action}`,
-      divider,
-    ].join("\n");
-  });
+  const header = [
+    `🔔 *Stock Scanner Alert* — ${runTime}`,
+    `${signals.length} signal(s) found  |  🟢 ${callCount} CALL  🔴 ${putCount} PUT`,
+    "_Ranked by composite score (technical + IVR + earnings + beta + options flow)_",
+  ].join("\n");
 
-  const text = [header, divider, ...blocks].join("\n");
+  const blocks = signals.map(s => buildSignalBlock(s, divider));
+  const text   = [header, divider, ...blocks].join("\n");
 
-  // ── POST to webhook ───────────────────────────────────
   const res = await fetch(WEBHOOK, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },

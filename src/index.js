@@ -1,8 +1,18 @@
-import { WATCHLIST, CONFIG } from "./watchlist.js";
-import { calcIndicators } from "./indicators.js";
-import { sendGoogleChatAlert } from "./notifier.js";
+import { CONFIG }                    from "./watchlist.js";
+import { calcIndicators }            from "./indicators.js";
+import { sendGoogleChatAlert }       from "./notifier.js";
+import { buildUniverse }             from "./tasty/watchlists.js";
+import { fetchMarketMetrics }        from "./tasty/market-metrics.js";
+import { enrichWithOptionChain }     from "./tasty/option-chain.js";
+import { rankCandidates }            from "./scorer.js";
 
-const DRY_RUN = process.argv.includes("--dry-run");
+const DRY_RUN   = process.argv.includes("--dry-run");
+const TOP_N     = 10;    // final signals to alert
+const OPT_CHAIN_LIMIT = 25; // max candidates enriched with option chain
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 /**
  * Fetch daily OHLCV candles directly from Yahoo Finance v8 API.
@@ -16,14 +26,14 @@ async function fetchCandles(ticker, days) {
 
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; stock-scanner/1.0)",
+      "User-Agent": "Mozilla/5.0 (compatible; stock-scanner/2.0)",
       "Accept":     "application/json",
     },
   });
 
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${ticker}`);
 
-  const json = await res.json();
+  const json   = await res.json();
   const result = json?.chart?.result?.[0];
   if (!result) throw new Error(`No data returned for ${ticker}`);
 
@@ -42,6 +52,10 @@ async function fetchCandles(ticker, days) {
     .filter(c => c.close != null);
 }
 
+/**
+ * Run technical analysis on a single ticker.
+ * Returns the tech result, or null if insufficient data / fetch error.
+ */
 async function scanTicker(ticker) {
   try {
     const candles = await fetchCandles(ticker, CONFIG.historyDays);
@@ -51,92 +65,164 @@ async function scanTicker(ticker) {
       return null;
     }
 
-    const ind = calcIndicators(candles, CONFIG);
+    const tech = calcIndicators(candles, CONFIG);
 
     console.log(
-      `  ${ticker.padEnd(6)} | close $${ind.lastClose} | RSI ${ind.rsi ?? "--"} ` +
-      `| MACD hist ${ind.macd?.hist ?? "--"} | vol ${ind.volumeRatio ?? "--"}x ` +
-      `| day ${ind.dayChangePct > 0 ? "+" : ""}${ind.dayChangePct}% ` +
-      `| score ${ind.score} ${ind.direction ? "→ " + ind.direction : ""}`
+      `  ${ticker.padEnd(6)} | $${tech.lastClose} | RSI ${tech.rsi ?? "--"} ` +
+      `| MACD hist ${tech.macd?.hist ?? "--"} | vol ${tech.volumeRatio ?? "--"}x ` +
+      `| 5d ${signed(tech.momentum5dPct)}% | ATR ${tech.atrPct ?? "--"}% ` +
+      `| techScore ${tech.score}`
     );
 
-    if (!ind.direction) return null;
-
-    return { ticker, ...ind };
-
+    return tech;
   } catch (err) {
     console.warn(`  ⚠️  ${ticker}: ${err.message}`);
     return null;
   }
 }
 
-async function fetchTrendingTickers() {
-  try {
-    const res = await fetch("https://query1.finance.yahoo.com/v1/finance/trending/US", {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; stock-scanner/1.0)" }
-    });
-    if (!res.ok) return [];
-    const json = await res.json();
-    const quotes = json?.finance?.result?.[0]?.quotes ?? [];
-    return quotes.map(q => q.symbol).filter(Boolean);
-  } catch (err) {
-    console.warn("  ⚠️  Failed to fetch trending tickers:", err.message);
-    return [];
-  }
+function signed(n) {
+  if (n === null || n === undefined) return "--";
+  return (n > 0 ? "+" : "") + n;
 }
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
   const runTime = new Date().toLocaleString("en-US", {
-    timeZone:     "America/New_York",
-    dateStyle:    "medium",
-    timeStyle:    "short",
+    timeZone:  "America/New_York",
+    dateStyle: "medium",
+    timeStyle: "short",
   });
 
-  console.log(`\n🔍  Stock Scanner — ${runTime} ET`);
-  console.log(`    Scanning ${WATCHLIST.length} watchlist tickers...\n`);
+  console.log(`\n🔍  Stock Scanner v2 (TastyTrade Enhanced) — ${runTime} ET`);
+  if (DRY_RUN) console.log("    [DRY RUN MODE — webhook will not be called]\n");
 
-  // Scan watchlist tickers
-  const watchlistSignals = [];
-  for (const ticker of WATCHLIST) {
-    const result = await scanTicker(ticker);
-    if (result) watchlistSignals.push(result);
-    await new Promise(r => setTimeout(r, 300)); // 300ms between requests
+  // ── STEP 1: Build stock universe ────────────────────────────────────────
+  console.log("\n📋  STEP 1: Building stock universe...");
+  let universe;
+  try {
+    universe = await buildUniverse();
+  } catch (err) {
+    console.error(`  ❌  Failed to build TastyTrade universe: ${err.message}`);
+    console.error("  ⚠️  Falling back to default watchlist from watchlist.js");
+    const { WATCHLIST } = await import("./watchlist.js");
+    universe = {
+      symbols:      WATCHLIST,
+      sources:      ["watchlist.js (fallback)"],
+      getWatchlists: () => ["Default watchlist"],
+    };
   }
 
-  console.log(`\n🚀  Fetching trending tickers for auto-discovery...`);
-  const trending = await fetchTrendingTickers();
-  const newTrending = trending.filter(t => !WATCHLIST.includes(t));
-  console.log(`    Found ${newTrending.length} new trending tickers.\n`);
+  const { symbols: allSymbols, sources, getWatchlists } = universe;
+  console.log(`  ✅  ${allSymbols.length} symbols from: ${sources.join(", ")}\n`);
 
-  const trendingSignals = [];
-  for (const ticker of newTrending) {
-    const result = await scanTicker(ticker);
-    if (result) trendingSignals.push(result);
-    await new Promise(r => setTimeout(r, 300));
+  // ── STEP 2: Batch market metrics (TastyTrade) ────────────────────────────
+  console.log("📊  STEP 2: Fetching TastyTrade market metrics...");
+  let metricsMap = new Map();
+  try {
+    metricsMap = await fetchMarketMetrics(allSymbols);
+  } catch (err) {
+    console.error(`  ❌  Market metrics failed: ${err.message}`);
+    console.warn("  ⚠️  Continuing without options metrics (technical-only mode)");
   }
 
-  // Get up to top 10 highest-scoring trending signals
-  trendingSignals.sort((a, b) => b.score - a.score);
-  const topTrendingSignals = trendingSignals.slice(0, 10);
+  // Pre-filter: remove F-rated symbols only if we have metrics for them
+  // (keeps symbols without metrics rather than filtering them out)
+  const universe_filtered = allSymbols.filter(sym => {
+    const m = metricsMap.get(sym);
+    if (!m) return true; // no metrics → keep it
+    return m.liquidityScore > 1; // exclude F-rated
+  });
+  const removedCount = allSymbols.length - universe_filtered.length;
+  if (removedCount > 0) {
+    console.log(`  🗑️  Removed ${removedCount} symbols with F liquidity rating`);
+  }
 
-  const signals = [...watchlistSignals, ...topTrendingSignals];
-  signals.sort((a, b) => b.score - a.score);
+  // ── STEP 3: Technical scan (Yahoo Finance) ───────────────────────────────
+  console.log(`\n📈  STEP 3: Technical scan (${universe_filtered.length} symbols)...\n`);
 
-  console.log(`\n📊  Results: ${signals.length} signal(s) found`);
+  const techResults = new Map(); // symbol → tech object
 
-  if (signals.length > 0) {
-    console.log("\nSignals:");
-    for (const s of signals) {
-      console.log(`  ${s.direction === "CALL" ? "🟢" : "🔴"} ${s.ticker} → ${s.direction} | score ${s.score} | ${s.reasons.join(", ")}`);
+  for (const ticker of universe_filtered) {
+    const tech = await scanTicker(ticker);
+    if (tech) techResults.set(ticker, tech);
+    await sleep(300); // 300ms between Yahoo Finance requests
+  }
+
+  console.log(`\n  ✅  Technical scan complete: ${techResults.size} symbols with data`);
+
+  // Sort by |techScore| descending to focus option-chain fetch on best candidates
+  const sortedByTechScore = [...techResults.entries()]
+    .sort(([, a], [, b]) => Math.abs(b.score) - Math.abs(a.score));
+
+  // ── STEP 4: Composite score (pre-chain) ──────────────────────────────────
+  // Build candidates with tech + metrics for initial ranking
+  const preCandidates = sortedByTechScore.map(([ticker, tech]) => ({
+    ticker,
+    tech,
+    metrics:    metricsMap.get(ticker) ?? null,
+    chain:      null,
+    watchlists: getWatchlists ? getWatchlists(ticker) : [],
+  }));
+
+  // Pre-rank to find top candidates for option chain enrichment
+  // Use tech score + IVR boost as a lightweight pre-score
+  const preRanked = preCandidates.sort((a, b) => {
+    const scoreA = Math.abs(a.tech.score) + (a.metrics?.ivr ?? 0) / 50;
+    const scoreB = Math.abs(b.tech.score) + (b.metrics?.ivr ?? 0) / 50;
+    return scoreB - scoreA;
+  });
+
+  // ── STEP 5: Option chain enrichment (top candidates only) ────────────────
+  console.log(`\n🔗  STEP 4: Enriching top ${OPT_CHAIN_LIMIT} with option chain data...`);
+  let chainMap = new Map();
+  try {
+    const topForChain = preRanked.slice(0, OPT_CHAIN_LIMIT).map(c => ({
+      ticker:    c.ticker,
+      lastClose: c.tech.lastClose,
+    }));
+    chainMap = await enrichWithOptionChain(topForChain, OPT_CHAIN_LIMIT);
+  } catch (err) {
+    console.error(`  ❌  Option chain enrichment failed: ${err.message}`);
+    console.warn("  ⚠️  Continuing without PCR data");
+  }
+
+  // ── STEP 6: Final composite scoring ─────────────────────────────────────
+  console.log("\n🏆  STEP 5: Computing composite scores...");
+
+  const finalCandidates = preCandidates.map(c => ({
+    ...c,
+    chain: chainMap.get(c.ticker) ?? null,
+  }));
+
+  const topSignals = rankCandidates(finalCandidates, TOP_N);
+
+  // ── STEP 7: Print results ────────────────────────────────────────────────
+  console.log(`\n📊  Results: ${topSignals.length} signal(s) found\n`);
+
+  if (topSignals.length > 0) {
+    console.log("Signals (ranked by composite score):");
+    for (const s of topSignals) {
+      const earningsBadge = s.isEarningsPlay ? " 🚨 EARNINGS" : "";
+      const ivrLabel      = s.ivr !== null ? ` IVR ${s.ivr.toFixed(0)}` : "";
+      console.log(
+        `  ${s.direction === "CALL" ? "🟢" : "🔴"} ${s.ticker.padEnd(6)}` +
+        ` → ${s.direction} | score ${s.score}${ivrLabel}${earningsBadge}` +
+        ` | ${s.reasons.slice(0, 3).join(", ")}`
+      );
     }
+  } else {
+    console.log("  No strong signals found today.");
   }
 
+  // ── STEP 8: Send alert ───────────────────────────────────────────────────
   if (DRY_RUN) {
     console.log("\n[DRY RUN] — webhook not called");
     return;
   }
 
-  await sendGoogleChatAlert(signals, runTime);
+  await sendGoogleChatAlert(topSignals, runTime);
 }
 
 main().catch(err => {

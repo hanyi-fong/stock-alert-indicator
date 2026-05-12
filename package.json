@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "scan": "node src/index.js",
-    "test": "node src/index.js --dry-run"
+    "scan": "node --env-file=.env src/index.js",
+    "test": "node --env-file=.env src/index.js --dry-run"
   },
   "dependencies": {
     "technicalindicators": "^3.1.0"

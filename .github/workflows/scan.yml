@@ -29,10 +29,23 @@ jobs:
 
       - name: Run stock scanner
         env:
-          # Add GOOGLE_CHAT_WEBHOOK in:
-          # GitHub repo → Settings → Secrets and variables → Actions → New secret
+          # ── Notifications ──────────────────────────────────────────────────
+          # Add in: Settings → Secrets and Variables → Actions → Secrets
           GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          # Optional: set your custom watchlist (comma-separated)
-          # WATCHLIST: "NVDA,TSLA,AMD,GOOGL,SPY"
+
+          # ── TastyTrade credentials (REQUIRED for options intelligence) ──────
+          # Add BOTH in: Settings → Secrets and Variables → Actions → Secrets
+          TASTYTRADE_CLIENT_SECRET: ${{ secrets.TASTYTRADE_CLIENT_SECRET }}
+          TASTYTRADE_REFRESH_TOKEN: ${{ secrets.TASTYTRADE_REFRESH_TOKEN }}
+
+          # ── Stock universe overrides (OPTIONAL) ────────────────────────────
+          # Add in: Settings → Secrets and Variables → Actions → Variables
+          #
+          # Option A: Filter to specific TastyTrade public watchlist names
+          #   TASTYTRADE_WATCHLISTS: "Tasty,Liquid,High IV"
+          #
+          # Option B: Override with exact tickers (highest priority)
+          #   WATCHLIST: "NVDA,TSLA,AMD,GOOGL,SPY"
+          TASTYTRADE_WATCHLISTS: ${{ vars.TASTYTRADE_WATCHLISTS }}
           WATCHLIST: ${{ vars.WATCHLIST }}
         run: node src/index.js

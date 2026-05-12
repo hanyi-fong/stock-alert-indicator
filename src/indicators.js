@@ -1,13 +1,15 @@
-import { MACD, RSI, BollingerBands } from "technicalindicators";
+import { MACD, RSI, BollingerBands, ATR } from "technicalindicators";
 
 /**
  * Calculate all indicators from an array of OHLCV candles.
- * @param {Array<{close, high, low, open, volume}>} candles  newest-last order
+ * @param {Array<{close, high, low, open, volume, date}>} candles  newest-last order
  * @param {Object} cfg   CONFIG from watchlist.js
  * @returns {Object}     flat object with latest indicator values + signals
  */
 export function calcIndicators(candles, cfg) {
   const closes  = candles.map(c => c.close);
+  const highs   = candles.map(c => c.high);
+  const lows    = candles.map(c => c.low);
   const volumes = candles.map(c => c.volume);
 
   // ── MACD ──────────────────────────────────────────────
@@ -50,7 +52,7 @@ export function calcIndicators(candles, cfg) {
   const lastClose = closes[closes.length - 1];
 
   const bbBreakoutUp   = bbCurr && lastClose > bbCurr.upper;   // overextended → PUT
-  const bbBreakoutDown = bbCurr && lastClose < bbCurr.lower;   // overextended → CALL
+  const bbBreakoutDown = bbCurr && lastClose < bbCurr.lower;   // oversold → CALL
 
   // ── Volume spike ──────────────────────────────────────
   const recentVols   = volumes.slice(-21, -1);  // last 20 days avg
@@ -62,10 +64,39 @@ export function calcIndicators(candles, cfg) {
   // ── Price move today ──────────────────────────────────
   const prevClose   = closes[closes.length - 2];
   const dayChangePct = prevClose > 0
-    ? +((( lastClose - prevClose) / prevClose) * 100).toFixed(2)
+    ? +(((lastClose - prevClose) / prevClose) * 100).toFixed(2)
     : 0;
   const bigMoveUp   = dayChangePct  >=  cfg.bigMovePercent;
   const bigMoveDown = dayChangePct  <= -cfg.bigMovePercent;
+
+  // ── 5-Day Momentum (slope) ────────────────────────────
+  let momentum5dPct = null;
+  if (closes.length >= 5) {
+    const close5dAgo = closes[closes.length - 5];
+    momentum5dPct = close5dAgo > 0
+      ? +((lastClose - close5dAgo) / close5dAgo * 100).toFixed(2)
+      : null;
+  }
+
+  // ── ATR% (Average True Range as % of price) ───────────
+  // High ATR% → inherently volatile → bigger expected moves
+  let atrPct = null;
+  if (candles.length >= 15 && highs.length >= 15 && lows.length >= 15) {
+    try {
+      const atrResult = ATR.calculate({
+        period: 14,
+        high:   highs,
+        low:    lows,
+        close:  closes,
+      });
+      const atrVal = atrResult[atrResult.length - 1];
+      if (atrVal && lastClose > 0) {
+        atrPct = +((atrVal / lastClose) * 100).toFixed(2);
+      }
+    } catch {
+      // ATR calculation can fail with insufficient data — safe to ignore
+    }
+  }
 
   // ── Composite signal scoring ──────────────────────────
   // Score > 0 = bullish (CALL candidate), < 0 = bearish (PUT candidate)
@@ -74,8 +105,13 @@ export function calcIndicators(candles, cfg) {
 
   if (macdBullish)    { score += 2; reasons.push("MACD bullish crossover"); }
   if (macdBearish)    { score -= 2; reasons.push("MACD bearish crossover"); }
-  if (rsiCurr !== null && rsiCurr <= cfg.rsiOversold)   { score += 2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)})`); }
-  if (rsiCurr !== null && rsiCurr >= cfg.rsiOverbought) { score -= 2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)})`); }
+
+  // RSI with extreme levels getting extra weight
+  if (rsiCurr !== null && rsiCurr <= 25)          { score += 3; reasons.push(`RSI extreme oversold (${rsiCurr.toFixed(1)})`); }
+  else if (rsiCurr !== null && rsiCurr <= cfg.rsiOversold)  { score += 2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)})`); }
+  if (rsiCurr !== null && rsiCurr >= 75)           { score -= 3; reasons.push(`RSI extreme overbought (${rsiCurr.toFixed(1)})`); }
+  else if (rsiCurr !== null && rsiCurr >= cfg.rsiOverbought){ score -= 2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)})`); }
+
   if (bbBreakoutDown) { score += 1; reasons.push("BB lower band touch"); }
   if (bbBreakoutUp)   { score -= 1; reasons.push("BB upper band breach"); }
   if (volumeSpike && bigMoveUp)   { score += 1; reasons.push(`Volume spike ${volumeRatio}x + up ${dayChangePct}%`); }
@@ -85,7 +121,7 @@ export function calcIndicators(candles, cfg) {
 
   return {
     score,
-    direction,        // "CALL", "PUT", or null (no clear signal)
+    direction,        // "CALL", "PUT", or null — technical direction only
     reasons,
     macd: macdCurr ? { macd: +macdCurr.MACD.toFixed(4), signal: +macdCurr.signal.toFixed(4), hist: +macdCurr.histogram.toFixed(4) } : null,
     rsi: rsiCurr ? +rsiCurr.toFixed(1) : null,
@@ -94,5 +130,7 @@ export function calcIndicators(candles, cfg) {
     volumeRatio,
     volumeSpike,
     lastClose,
+    momentum5dPct,
+    atrPct,
   };
 }
