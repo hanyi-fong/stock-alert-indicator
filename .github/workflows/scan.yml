@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       full_scan:
-        description: 'Run Full Scan (bypass 1st level filter)'
+        description: 'Run Full Scan'
         type: boolean
         required: false
         default: false
