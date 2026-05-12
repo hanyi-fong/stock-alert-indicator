@@ -17,7 +17,9 @@ PUT signal     PUT   WATCH   CALL     CALL signal
 | ≥ +3 | **CALL** 🟢 | Bullish — buy CALL |
 | ≤ −3 | **PUT** 🔴 | Bearish — buy PUT |
 | −2 to +2 | — | No clear signal (ignored) |
-| Earnings override | CALL or PUT | Even score ≥ \|2\| is alerted if earnings within 3 days |
+| Earnings override | CALL or PUT | Even score ≥ |2| is alerted if earnings within 3 days |
+
+> **Score cap:** The composite score is **hard-clamped to ±10** after all stages. The 1.5× earnings multiplier can push raw values above 10 (e.g. 9.5 × 1.5 = 14.25), but the displayed score will never exceed ±10.
 
 ---
 
@@ -53,6 +55,21 @@ The **RSI** measures how overbought or oversold a stock is on a 0–100 scale. U
 | ≥ 70 | Overbought | **−2** (PUT) |
 
 > Extreme RSI + MACD crossover together is the most reliable reversal signal.
+
+#### RSI + MACD Correlation Cap
+
+Because a MACD bullish crossover almost always occurs at the same time RSI is recovering from an oversold reading (and vice versa for bearish), both signals often reflect a **single underlying event** rather than two independent data points.
+
+To prevent double-counting, when MACD and RSI both fire in the **same direction**, their combined contribution is **capped at ±4** (instead of the raw ±5):
+
+| MACD | RSI | Raw | Capped |
+|---|---|---|---|
+| +2 | +2 | +4 | +4 (no cap needed) |
+| +2 | +3 | +5 | **+4** |
+| −2 | −3 | −5 | **−4** |
+| +2 | −2 | 0 | 0 (opposite dirs — no cap) |
+
+When the cap applies, a `RSI+MACD correlation cap` note is added to the signal reasons.
 
 ---
 
@@ -144,24 +161,25 @@ The beta bonus amplifies the existing direction:
 
 ---
 
-### 2.4 Liquidity Rating (filter) `score × 0.5 penalty`
+### 2.4 Liquidity Rating `score × penalty`
 
 TastyTrade's proprietary **A–F liquidity rating** combines bid/ask spreads, option volume, and open interest.
 
-| Rating | Effect |
-|---|---|
-| A, B | ✅ No penalty — good options liquidity |
-| C, D | ✅ No penalty — acceptable |
-| F | ⚠️ Score halved — options are illiquid/untradeable |
+| Rating | Score | Effect |
+|---|---|---|
+| A, B | 5 | ✅ No penalty — excellent options liquidity |
+| C | 3–4 | ✅ No penalty — acceptable |
+| D | 2 | ⚠️ Score × **0.75** — poor liquidity, tradeable but costly |
+| F | 1 | ⚠️ Score × **0.50** — options illiquid / untradeable |
 
-> An F-rated stock might have great technical signals, but if you can't get filled on an option trade, the signal is useless.
+> An F-rated stock might have great technical signals, but if you can't get filled on an option trade, the signal is useless. D-rated stocks are penalised to remain consistent with Fast Scan's pre-filter, which excludes them entirely.
 
 ### 2.5 1st Level Filter (Fast Scan Default)
 By default, the scanner runs in **Fast Scan** mode to optimize performance. Before downloading heavy technical data, it **excludes** stocks that have:
 - **Low Liquidity:** D or F rating (Liquidity Score ≤ 2)
 - **Low Volatility Premium:** IVR < 30
 
-*Note: You can bypass this by running with the `--full-scan` flag, which will only filter out F-rated stocks.*
+*Note: You can bypass this by running with the `--full-scan` flag. In full-scan mode, D-rated stocks are kept but receive a 0.75× score penalty, and F-rated stocks are kept but receive a 0.50× score penalty.*
 
 ---
 
@@ -182,6 +200,9 @@ Looks at the **nearest expiry ≤ 14 DTE** for directional confirmation.
 
 > PCR reflects where real money is positioned — options traders are often right about direction.
 
+> [!NOTE]
+> **Known Limitation:** PCR is computed from the **nearest expiry ≤ 14 DTE** only. Institutional hedges often sit in 30–60 DTE expirations and are not captured here. A neutral near-term PCR can coexist with heavy directional positioning in longer-dated strikes.
+
 ---
 
 ## Stage 4 — Earnings Catalyst Multiplier 🚨
@@ -200,6 +221,9 @@ Example: Score was +4.0 (CALL) with earnings in 2 days
 
 > Earnings announcements guarantee a large price move. The direction (CALL/PUT) depends on whether the stock is technically oversold or overbought going into earnings.
 
+> [!WARNING]
+> **Directional risk:** Pre-earnings price action is often distorted by institutional accumulation or distribution. A technically overbought stock can still gap up 15%+ on a beat; an oversold stock can crash further on a miss. Treat the 1.5× multiplier as a **volatility amplifier**, not a direction guarantee. Always cross-check with options flow and news sentiment before sizing a position.
+
 ---
 
 ## Full Scoring Example
@@ -208,8 +232,9 @@ Example: Score was +4.0 (CALL) with earnings in 2 days
 
 | Signal | Value | Points |
 |---|---|---|
-| MACD bullish crossover | Yes | **+2** |
-| RSI = 28 (extreme oversold) | Yes | **+3** |
+| MACD bullish crossover | Yes | +2 (raw) |
+| RSI = 28 (extreme oversold) | Yes | +3 (raw) |
+| **RSI+MACD correlation cap** | Both fired bullish | **capped at +4** (−1 vs raw +5) |
 | BB below lower band | Yes | **+1** |
 | Volume spike 3.2× + up 2.1% (not ≥3%) | Partial | 0 |
 | 5-day momentum +4.8% | Yes | **+1** |
@@ -217,10 +242,9 @@ Example: Score was +4.0 (CALL) with earnings in 2 days
 | Beta = 1.9 (< 2.0 threshold) | — | 0 |
 | ATR% = 5.2% | Yes | **+0.5** |
 | PCR = 0.52 (call-heavy) | Yes | **+1** |
-| Earnings in 2 days 🚨 | 1.5× multiplier | — |
-| **Raw score before multiplier** | | **= +9.5** |
-| **Earnings 1.5× multiplier** | | **× 1.5** |
-| **Final composite score** | | **= +10 (CALL)** |
+| **Sub-total** | | **= +8.5** |
+| Earnings in 2 days 🚨 | 1.5× multiplier | **× 1.5 = +12.75** |
+| **Score cap enforced** | Hard clamp at ±10 | **= +10 (CALL)** 🚨 |
 
 ---
 

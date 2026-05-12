@@ -103,14 +103,35 @@ export function calcIndicators(candles, cfg) {
   let score = 0;
   const reasons = [];
 
-  if (macdBullish)    { score += 2; reasons.push("MACD bullish crossover"); }
-  if (macdBearish)    { score -= 2; reasons.push("MACD bearish crossover"); }
+  // ── MACD contribution ─────────────────────────────────
+  const macdContrib = macdBullish ? 2 : macdBearish ? -2 : 0;
+  if (macdBullish) reasons.push("MACD bullish crossover");
+  if (macdBearish) reasons.push("MACD bearish crossover");
 
-  // RSI with extreme levels getting extra weight
-  if (rsiCurr !== null && rsiCurr <= 25)          { score += 3; reasons.push(`RSI extreme oversold (${rsiCurr.toFixed(1)})`); }
-  else if (rsiCurr !== null && rsiCurr <= cfg.rsiOversold)  { score += 2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)})`); }
-  if (rsiCurr !== null && rsiCurr >= 75)           { score -= 3; reasons.push(`RSI extreme overbought (${rsiCurr.toFixed(1)})`); }
-  else if (rsiCurr !== null && rsiCurr >= cfg.rsiOverbought){ score -= 2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)})`); }
+  // ── RSI contribution ──────────────────────────────────
+  // Extreme levels get extra weight (±3 vs ±2)
+  let rsiContrib = 0;
+  if (rsiCurr !== null) {
+    if      (rsiCurr <= 25)               { rsiContrib =  3; reasons.push(`RSI extreme oversold (${rsiCurr.toFixed(1)})`); }
+    else if (rsiCurr <= cfg.rsiOversold)  { rsiContrib =  2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)})`); }
+    else if (rsiCurr >= 75)               { rsiContrib = -3; reasons.push(`RSI extreme overbought (${rsiCurr.toFixed(1)})`); }
+    else if (rsiCurr >= cfg.rsiOverbought){ rsiContrib = -2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)})`); }
+  }
+
+  // ── Diminishing returns: RSI + MACD correlation cap ───
+  // A MACD crossover almost always coincides with RSI recovering from an extreme,
+  // meaning both signals reflect the same underlying event. When they fire in the
+  // same direction, cap their combined contribution to ±4 (instead of ±5) to
+  // avoid overstating conviction on a single correlated move.
+  let combinedRsiMacd = macdContrib + rsiContrib;
+  if (macdContrib !== 0 && rsiContrib !== 0 && Math.sign(macdContrib) === Math.sign(rsiContrib)) {
+    const cap = Math.sign(combinedRsiMacd) * Math.min(4, Math.abs(combinedRsiMacd));
+    if (Math.abs(combinedRsiMacd) > 4) {
+      reasons.push(`RSI+MACD correlation cap (raw ${combinedRsiMacd > 0 ? '+' : ''}${combinedRsiMacd} → capped ${cap > 0 ? '+' : ''}${cap})`);
+    }
+    combinedRsiMacd = cap;
+  }
+  score += combinedRsiMacd;
 
   if (bbBreakoutDown) { score += 1; reasons.push("BB lower band touch"); }
   if (bbBreakoutUp)   { score -= 1; reasons.push("BB upper band breach"); }

@@ -36,6 +36,9 @@ export function compositeScore(tech, metrics, chain) {
   score += tech.score;  // up to ±6 from MACD/RSI/BB/volume
 
   // ─── 5-day momentum (from indicators.js enhancements) ────────────────────
+  // Note: momentum is trend-following (+1/-1), while RSI/BB are mean-reversion.
+  // When they conflict (e.g. oversold RSI + negative momentum), they cancel
+  // arithmetically — this is intentional and correct behaviour.
   if (tech.momentum5dPct !== undefined && tech.momentum5dPct !== null) {
     if (tech.momentum5dPct >= 4) {
       score += 1;
@@ -82,11 +85,16 @@ export function compositeScore(tech, metrics, chain) {
       reasons.push(`Beta ${beta.toFixed(1)}`);
     }
 
-    // Liquidity filter — heavily penalize F-rated (un-tradeable options)
+    // Liquidity filter — penalize illiquid options chains
     if (liqScore === 1) {
-      // F rating — no tradeable options, disqualify for options plays
+      // F rating — no tradeable options; heavily penalise
       score *= 0.5;
       reasons.push("⚠️ Liquidity F (options illiquid)");
+    } else if (liqScore === 2) {
+      // D rating — poor but tradeable; apply a moderate penalty so Full Scan
+      // results are consistent with Fast Scan's pre-filter that excludes D-rated stocks.
+      score *= 0.75;
+      reasons.push("⚠️ Liquidity D (poor options liquidity)");
     }
   }
 
@@ -117,6 +125,11 @@ export function compositeScore(tech, metrics, chain) {
     isEarningsPlay = true;
     reasons.push(`🚨 EARNINGS in ${metrics.daysToEarnings} day(s)`);
   }
+
+  // ─── Explicit score cap ───────────────────────────────────────────────────
+  // Raw math (especially with the 1.5× earnings multiplier) can produce values
+  // beyond ±10. We clamp here so the documented scale is always honoured.
+  score = Math.max(-10, Math.min(10, score));
 
   // Round score to 1 decimal
   score = +score.toFixed(1);
