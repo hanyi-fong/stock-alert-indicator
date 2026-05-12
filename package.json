@@ -1,0 +1,14 @@
+{
+  "name": "stock-alert",
+  "version": "1.0.0",
+  "description": "Stock scanner with MACD/RSI/Volume alerts to Google Chat",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "scan": "node src/index.js",
+    "test": "node src/index.js --dry-run"
+  },
+  "dependencies": {
+    "technicalindicators": "^3.1.0"
+  }
+}

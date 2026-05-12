@@ -1,0 +1,35 @@
+name: Stock Scanner
+
+on:
+  schedule:
+    # Runs Mon–Fri at 9:35 AM ET (market open + 5 min) — 13:35 UTC
+    - cron: "35 13 * * 1-5"
+    # Runs Mon–Fri at 3:45 PM ET (15 min before close) — 19:45 UTC
+    - cron: "45 19 * * 1-5"
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run stock scanner
+        env:
+          # Add GOOGLE_CHAT_WEBHOOK in:
+          # GitHub repo → Settings → Secrets and variables → Actions → New secret
+          GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+        run: node src/index.js
