@@ -70,6 +70,21 @@ async function scanTicker(ticker) {
   }
 }
 
+async function fetchTrendingTickers() {
+  try {
+    const res = await fetch("https://query1.finance.yahoo.com/v1/finance/trending/US", {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; stock-scanner/1.0)" }
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    const quotes = json?.finance?.result?.[0]?.quotes ?? [];
+    return quotes.map(q => q.symbol).filter(Boolean);
+  } catch (err) {
+    console.warn("  ⚠️  Failed to fetch trending tickers:", err.message);
+    return [];
+  }
+}
+
 async function main() {
   const runTime = new Date().toLocaleString("en-US", {
     timeZone:     "America/New_York",
@@ -78,15 +93,34 @@ async function main() {
   });
 
   console.log(`\n🔍  Stock Scanner — ${runTime} ET`);
-  console.log(`    Scanning ${WATCHLIST.length} tickers...\n`);
+  console.log(`    Scanning ${WATCHLIST.length} watchlist tickers...\n`);
 
-  // Scan all tickers with a small delay to avoid rate limits
-  const signals = [];
+  // Scan watchlist tickers
+  const watchlistSignals = [];
   for (const ticker of WATCHLIST) {
     const result = await scanTicker(ticker);
-    if (result) signals.push(result);
+    if (result) watchlistSignals.push(result);
     await new Promise(r => setTimeout(r, 300)); // 300ms between requests
   }
+
+  console.log(`\n🚀  Fetching trending tickers for auto-discovery...`);
+  const trending = await fetchTrendingTickers();
+  const newTrending = trending.filter(t => !WATCHLIST.includes(t));
+  console.log(`    Found ${newTrending.length} new trending tickers.\n`);
+
+  const trendingSignals = [];
+  for (const ticker of newTrending) {
+    const result = await scanTicker(ticker);
+    if (result) trendingSignals.push(result);
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  // Get up to top 10 highest-scoring trending signals
+  trendingSignals.sort((a, b) => b.score - a.score);
+  const topTrendingSignals = trendingSignals.slice(0, 10);
+
+  const signals = [...watchlistSignals, ...topTrendingSignals];
+  signals.sort((a, b) => b.score - a.score);
 
   console.log(`\n📊  Results: ${signals.length} signal(s) found`);
 
