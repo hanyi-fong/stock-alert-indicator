@@ -2,17 +2,8 @@ name: Stock Scanner
 
 on:
   schedule:
-    # ⚠️ DST WARNING: GitHub Actions runs on UTC, which does NOT observe Daylight Saving Time.
-    # - During EDT (Summer, ~March to Nov): Eastern Time is UTC-4.
-    # - During EST (Winter, ~Nov to March): Eastern Time is UTC-5.
-    # You will need to manually shift these UTC hours twice a year to keep the exact ET times.
-    # The current settings below are configured for EDT (Summer):
-    
-    # Runs Mon–Fri at 9:35 AM ET (market open + 5 min) — 13:35 UTC
     - cron: "35 13 * * 1-5"
-    # Runs Mon–Fri at 3:30 PM ET (30 min before close) — 19:30 UTC
     - cron: "30 19 * * 1-5"
-    - cron: "*/10 * * * *"  # every 10 minutes — testing only
 
   # Allow manual trigger from GitHub Actions tab
   workflow_dispatch:
