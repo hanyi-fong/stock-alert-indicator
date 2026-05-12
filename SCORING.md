@@ -104,8 +104,12 @@ Confirms institutional activity — smart money is moving.
 
 | Condition | Points |
 |---|---|
-| 5-day momentum ≥ +4% | **+1** (CALL — strong uptrend) |
-| 5-day momentum ≤ −4% | **−1** (PUT — strong downtrend) |
+| 5-day momentum ≥ +15% | **−2** (Exhaustion risk / overbought) |
+| 5-day momentum ≤ −15% | **+2** (Exhaustion risk / oversold) |
+| 5-day momentum +4% to +14.9% | **+1** (CALL — strong uptrend) |
+| 5-day momentum -4% to -14.9% | **−1** (PUT — strong downtrend) |
+
+> A stock running up > 15% in 5 days is highly susceptible to a "sell the news" pullback. The algorithm penalizes extreme momentum to prevent buying the absolute top (or shorting the absolute bottom).
 
 ---
 
@@ -119,7 +123,7 @@ These signals come from TastyTrade's market intelligence — what professional o
 - **High IVR = options market expects a big move**
 - IVR > 50 means IV is in the top 50th percentile of the past year
 
-The IVR bonus **amplifies the existing direction** (adds to CALL score if positive, to PUT score if negative):
+The IVR bonus **amplifies the existing direction** (adds to CALL score if positive, to PUT score if negative), **unless the stock is overextended**:
 
 | IVR Level | Bonus | Label |
 |---|---|---|
@@ -129,6 +133,8 @@ The IVR bonus **amplifies the existing direction** (adds to CALL score if positi
 | < 30 | 0 | Normal |
 
 > High IVR alone doesn't tell direction — it just confirms the market expects big movement. Combined with technical direction, it's a powerful amplifier.
+>
+> **Note:** If a stock is mathematically overextended (> ±15% 5-day momentum), the IVR bonus is **neutralized**. High IVR after a parabolic run often indicates the market is pricing in a crash or offering, not further continuation.
 
 ---
 

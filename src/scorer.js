@@ -39,8 +39,17 @@ export function compositeScore(tech, metrics, chain) {
   // Note: momentum is trend-following (+1/-1), while RSI/BB are mean-reversion.
   // When they conflict (e.g. oversold RSI + negative momentum), they cancel
   // arithmetically — this is intentional and correct behaviour.
+  let isOverextended = false;
   if (tech.momentum5dPct !== undefined && tech.momentum5dPct !== null) {
-    if (tech.momentum5dPct >= 4) {
+    if (tech.momentum5dPct >= 15) {
+      score -= 2; // Penalise CALL score for exhaustion risk
+      isOverextended = true;
+      reasons.push(`⚠️ Overextended (+${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk`);
+    } else if (tech.momentum5dPct <= -15) {
+      score += 2; // Penalise PUT score for exhaustion risk
+      isOverextended = true;
+      reasons.push(`⚠️ Overextended (${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk`);
+    } else if (tech.momentum5dPct >= 4) {
       score += 1;
       reasons.push(`5d momentum +${tech.momentum5dPct.toFixed(1)}%`);
     } else if (tech.momentum5dPct <= -4) {
@@ -70,7 +79,11 @@ export function compositeScore(tech, metrics, chain) {
 
       // IVR bonus amplifies the existing direction
       if (ivrBonus > 0) {
-        score += score >= 0 ? ivrBonus : -ivrBonus;
+        if (isOverextended) {
+          reasons.push(`IVR bonus neutralized (stock overextended)`);
+        } else {
+          score += score >= 0 ? ivrBonus : -ivrBonus;
+        }
       }
     }
 
