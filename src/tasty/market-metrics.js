@@ -98,9 +98,12 @@ export async function fetchMarketMetrics(symbols) {
       const symbol = item.symbol;
       if (!symbol) continue;
 
-      const ivr           = parseFloat(item["implied-volatility-index-rank"]) || null;
-      const ivPercentile  = parseFloat(item["implied-volatility-percentile"]) || null;
-      const ivIndex       = parseFloat(item["implied-volatility-index"]) || null;
+      const ivrRaw        = parseFloat(item["implied-volatility-index-rank"]);
+      const ivr           = !isNaN(ivrRaw) ? ivrRaw * 100 : null;
+      const ivpRaw        = parseFloat(item["implied-volatility-percentile"]);
+      const ivPercentile  = !isNaN(ivpRaw) ? ivpRaw * 100 : null;
+      const iviRaw        = parseFloat(item["implied-volatility-index"]);
+      const ivIndex       = !isNaN(iviRaw) ? iviRaw * 100 : null;
       const beta          = parseFloat(item["beta"]) || null;
       const liqRating     = item["liquidity-rating"] ?? null;
       const earningsDate  = item["earnings-next-date"] ?? null;

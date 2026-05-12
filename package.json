@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "scan": "node --env-file=.env src/index.js",
+    "scan:full": "node --env-file=.env src/index.js --full-scan",
     "test": "node --env-file=.env src/index.js --dry-run"
   },
   "dependencies": {

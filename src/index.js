@@ -7,6 +7,7 @@ import { enrichWithOptionChain }     from "./tasty/option-chain.js";
 import { rankCandidates }            from "./scorer.js";
 
 const DRY_RUN   = process.argv.includes("--dry-run");
+const FULL_SCAN = process.argv.includes("--full-scan");
 const TOP_N     = 10;    // final signals to alert
 const OPT_CHAIN_LIMIT = 25; // max candidates enriched with option chain
 
@@ -96,7 +97,8 @@ async function main() {
   });
 
   console.log(`\n🔍  Stock Scanner v2 (TastyTrade Enhanced) — ${runTime} ET`);
-  if (DRY_RUN) console.log("    [DRY RUN MODE — webhook will not be called]\n");
+  if (DRY_RUN) console.log("    [DRY RUN MODE — webhook will not be called]");
+  console.log(`    [SCAN MODE — ${FULL_SCAN ? "FULL SCAN" : "FAST SCAN (Potential Stocks Only)"}]\n`);
 
   // ── STEP 1: Build stock universe ────────────────────────────────────────
   console.log("\n📋  STEP 1: Building stock universe...");
@@ -127,16 +129,28 @@ async function main() {
     console.warn("  ⚠️  Continuing without options metrics (technical-only mode)");
   }
 
-  // Pre-filter: remove F-rated symbols only if we have metrics for them
-  // (keeps symbols without metrics rather than filtering them out)
+  // Pre-filter (1st Level Scan)
+  // FULL SCAN: remove F-rated symbols only if we have metrics for them
+  // FAST SCAN: additionally remove low-potential stocks (e.g. low liquidity or low IVR)
   const universe_filtered = allSymbols.filter(sym => {
     const m = metricsMap.get(sym);
     if (!m) return true; // no metrics → keep it
-    return m.liquidityScore > 1; // exclude F-rated
+    
+    if (FULL_SCAN) {
+      return m.liquidityScore > 1; // exclude F-rated
+    } else {
+      // FAST SCAN: Exclude if Liquidity is poor OR IVR is too low.
+      // (Excluding "No Earnings" check per user feedback)
+      const hasGoodLiquidity = m.liquidityScore > 2; // exclude F and D
+      const hasGoodIVR = m.ivr !== null && m.ivr >= 30;
+      return hasGoodLiquidity && hasGoodIVR;
+    }
   });
+  
   const removedCount = allSymbols.length - universe_filtered.length;
   if (removedCount > 0) {
-    console.log(`  🗑️  Removed ${removedCount} symbols with F liquidity rating`);
+    const reason = FULL_SCAN ? "F liquidity rating" : "low potential (poor liquidity or low IVR)";
+    console.log(`  🗑️  Filtered out ${removedCount} symbols with ${reason}`);
   }
 
   // ── STEP 3: Technical scan (Yahoo Finance) ───────────────────────────────

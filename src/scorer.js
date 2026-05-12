@@ -173,7 +173,17 @@ export function rankCandidates(candidates, topN = 10) {
     .filter(s => s.direction !== null); // must have a clear CALL or PUT
 
   // Sort by absolute score descending (biggest magnitude = most extreme setup)
-  scored.sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+  // Tie-breakers: IVR descending, then Volume Ratio descending
+  scored.sort((a, b) => {
+    const scoreDiff = Math.abs(b.score) - Math.abs(a.score);
+    if (scoreDiff !== 0) return scoreDiff; // Primary sort: Score
+
+    const ivrDiff = (b.ivr || 0) - (a.ivr || 0);
+    if (ivrDiff !== 0) return ivrDiff; // Secondary sort: IVR
+
+    const volDiff = (b.volumeRatio || 0) - (a.volumeRatio || 0);
+    return volDiff; // Tertiary sort: Volume Ratio
+  });
 
   return scored.slice(0, topN);
 }

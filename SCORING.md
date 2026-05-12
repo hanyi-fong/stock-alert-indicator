@@ -156,6 +156,13 @@ TastyTrade's proprietary **A–F liquidity rating** combines bid/ask spreads, op
 
 > An F-rated stock might have great technical signals, but if you can't get filled on an option trade, the signal is useless.
 
+### 2.5 1st Level Filter (Fast Scan Default)
+By default, the scanner runs in **Fast Scan** mode to optimize performance. Before downloading heavy technical data, it **excludes** stocks that have:
+- **Low Liquidity:** D or F rating (Liquidity Score ≤ 2)
+- **Low Volatility Premium:** IVR < 30
+
+*Note: You can bypass this by running with the `--full-scan` flag, which will only filter out F-rated stocks.*
+
 ---
 
 ## Stage 3 — Option Chain Flow (from TastyTrade `/option-chains` + `/market-data`)

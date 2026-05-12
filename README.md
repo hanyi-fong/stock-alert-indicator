@@ -10,8 +10,9 @@ The scanner operates in 4 stages to generate a **Composite Score (-10 to +10)**:
 
 1. **Universe Building:** Curates a dynamic list of highly liquid, optionable stocks from TastyTrade's public watchlists (e.g., "High Options Volume", "Liquid Symbols", "tasty IVR").
 2. **Options Market Intelligence:** Fetches IVR, Beta, Liquidity Ratings, and upcoming earnings dates directly from TastyTrade.
-3. **Technical Scan:** Evaluates 60 days of OHLCV data using MACD, RSI, Bollinger Bands, Volume, ATR, and 5-day momentum.
-4. **Institutional Flow:** Extracts the Put/Call Ratio (PCR) from near-ATM options for the top candidates to confirm the "smart money" direction.
+3. **1st Level Filter (Fast Scan):** By default, the scanner skips stocks with low liquidity (D or F rating) or low IVR (< 30) to save API calls and speed up execution. (Use `--full-scan` to bypass).
+4. **Technical Scan:** Evaluates 60 days of OHLCV data using MACD, RSI, Bollinger Bands, Volume, ATR, and 5-day momentum.
+5. **Institutional Flow:** Extracts the Put/Call Ratio (PCR) from near-ATM options for the top candidates to confirm the "smart money" direction.
 
 *(See [SCORING.md](./SCORING.md) for a deep dive into exactly how the score is calculated).*
 
@@ -54,7 +55,17 @@ npm run scan
 node --env-file=.env src/index.js
 ```
 
-### 4. Deploy to GitHub Actions
+### 4. Fast Scan vs Full Scan
+By default, the scanner runs in **Fast Scan** mode, which filters out low-potential stocks (poor liquidity or low IVR) before the technical analysis phase. This significantly improves performance and avoids API rate limits.
+
+To scan *every* optionable stock (only excluding F-rated liquidity):
+```bash
+npm run scan:full
+# OR
+node --env-file=.env src/index.js --full-scan
+```
+
+### 5. Deploy to GitHub Actions
 To automate the scanner so it runs every weekday near market open and close, push to GitHub and set up your repository Secrets.
 
 ```bash
@@ -79,6 +90,7 @@ The scanner will now run automatically at **9:35 AM and 3:45 PM ET, Monday–Fri
 ## Manual GitHub Action Run
 You can manually trigger the workflow anytime:
 Go to your GitHub repo → **Actions** → **Stock Scanner** → **Run workflow**
+- You can check the **Run Full Scan** box to trigger a `--full-scan` bypass.
 
 ## Disclaimer
 This tool is for educational purposes only. Options trading involves significant risk and can result in the loss of capital. Always do your own research before placing any trade.
