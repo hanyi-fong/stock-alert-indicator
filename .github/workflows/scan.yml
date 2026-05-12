@@ -32,4 +32,7 @@ jobs:
           # Add GOOGLE_CHAT_WEBHOOK in:
           # GitHub repo → Settings → Secrets and variables → Actions → New secret
           GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          # Optional: set your custom watchlist (comma-separated)
+          # WATCHLIST: "NVDA,TSLA,AMD,GOOGL,SPY"
+          WATCHLIST: ${{ vars.WATCHLIST }}
         run: node src/index.js

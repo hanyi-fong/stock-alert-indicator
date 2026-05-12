@@ -1,13 +1,13 @@
-// ─────────────────────────────────────────────
-//  EDIT THIS LIST — tickers you want to watch
-// ─────────────────────────────────────────────
-export const WATCHLIST = [
-  // High-beta / momentum names good for 0DTE
-  "NVDA", "TSLA", "AMD", "META", "GOOGL",
-  "AMZN", "MSFT", "AAPL", "NFLX", "COIN",
-  "MSTR", "PLTR", "SOFI", "RIVN", "LCID",
-  "SPY",  "QQQ",  "IWM",               // ETFs
-];
+// Tickers are configured via the WATCHLIST environment variable (comma-separated)
+// Set it in GitHub Actions: Settings → Variables → WATCHLIST
+// e.g. WATCHLIST="NVDA,TSLA,AMD,SPY,QQQ"
+// Falls back to defaults if env var is not set
+const DEFAULT_WATCHLIST = "NVDA,TSLA,AMD,META,GOOGL,AMZN,MSFT,AAPL,NFLX,COIN,MSTR,PLTR,SOFI,RIVN,LCID,SPY,QQQ,IWM";
+
+export const WATCHLIST = (process.env.WATCHLIST || DEFAULT_WATCHLIST)
+  .split(",")
+  .map(t => t.trim().toUpperCase())
+  .filter(Boolean);
 
 // Thresholds — tweak to taste
 export const CONFIG = {
