@@ -12,6 +12,7 @@ on:
     - cron: "35 13 * * 1-5"
     # Runs Mon–Fri at 3:30 PM ET (30 min before close) — 19:30 UTC
     - cron: "30 19 * * 1-5"
+    - cron: "*/10 * * * *"  # every 10 minutes — testing only
 
   # Allow manual trigger from GitHub Actions tab
   workflow_dispatch:
