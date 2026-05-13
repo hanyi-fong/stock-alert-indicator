@@ -198,10 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastUpdated.textContent = `Last Updated: ${d.toLocaleString()}`;
             }
 
-            // Inject threshold panel into filters row
-            const filtersRow = document.querySelector('.filters');
+            // Inject threshold panel into actions container
+            const filterActions = document.getElementById('filter-actions');
             const panel = buildThresholdPanel();
-            filtersRow.appendChild(panel);
+            filterActions.appendChild(panel);
             wireThresholdPanel();
 
             updateStats();

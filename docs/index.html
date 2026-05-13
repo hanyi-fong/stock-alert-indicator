@@ -73,20 +73,27 @@
         </header>
 
         <main>
-            <div class="filters">
-                <input type="text" id="search" placeholder="Search Ticker...">
-                <select id="direction-filter">
-                    <option value="ALL">All Directions</option>
-                    <option value="CALL">CALL</option>
-                    <option value="PUT">PUT</option>
-                </select>
-                <div class="toggle-group">
-                    <label class="switch">
-                        <input type="checkbox" id="show-closed">
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="toggle-text">Show Closed</span>
+            <div class="filters-row">
+                <div class="filter-controls">
+                    <input type="text" id="search" placeholder="Search Ticker...">
+                    <select id="direction-filter">
+                        <option value="ALL">All Directions</option>
+                        <option value="CALL">CALL</option>
+                        <option value="PUT">PUT</option>
+                    </select>
+                    <div class="toggle-group">
+                        <label class="switch">
+                            <input type="checkbox" id="show-closed">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-text">Show Closed</span>
+                    </div>
                 </div>
+                <div id="filter-actions" class="filter-actions">
+                    <!-- Threshold panel will be injected here by app.js -->
+                </div>
+            </div>
+            <div class="last-updated-row">
                 <div class="last-updated" id="last-updated">Last Updated: --</div>
             </div>
 

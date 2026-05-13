@@ -162,11 +162,41 @@ header {
     letter-spacing: 0.5px;
 }
 
-.filters {
+.filters-row {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 0.75rem;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-actions {
+    flex-shrink: 0;
+}
+
+.last-updated-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    padding-right: 0.5rem;
+}
+
+.last-updated {
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    opacity: 0.6;
+    font-family: monospace;
+}
+
+input[type="text"]#search {
+    width: 220px;
 }
 
 input,
@@ -174,22 +204,19 @@ select {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 1rem;
     border-radius: 8px;
     font-family: inherit;
     outline: none;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    height: 38px;
+    box-sizing: border-box;
 }
 
 input:focus,
 select:focus {
     border-color: #38bdf8;
-}
-
-.last-updated {
-    margin-left: auto;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    background: rgba(56, 189, 248, 0.05);
 }
 
 /* Switch Styling */
@@ -198,15 +225,18 @@ select:focus {
     align-items: center;
     gap: 0.75rem;
     background: var(--bg-card);
-    padding: 0.5rem 1rem;
+    padding: 0 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    height: 38px;
+    box-sizing: border-box;
 }
 
 .toggle-text {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
     user-select: none;
+    white-space: nowrap;
 }
 
 .switch {
@@ -614,9 +644,10 @@ input:checked+.slider:before {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.65rem 1rem;
+    padding: 0 1rem;
+    height: 38px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--text-primary);
     user-select: none;
