@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const searchInput = document.getElementById('search');
     const directionFilter = document.getElementById('direction-filter');
+    const showClosedCheck = document.getElementById('show-closed');
     const lastUpdated = document.getElementById('last-updated');
 
     let allTracks = [];
@@ -22,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return res.json();
         })
         .then(data => {
-            allTracks = data.tracks || [];
+            allTracks = (data.tracks || []).sort((a, b) => 
+                new Date(b.dateDetected) - new Date(a.dateDetected)
+            );
 
             // Set Last Updated
             if (data.updatedAt) {
@@ -31,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             updateStats();
-            renderGrid(allTracks);
+            applyFilters();
             loading.style.display = 'none';
         })
         .catch(err => {
@@ -42,31 +45,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners for Filters
     searchInput.addEventListener('input', applyFilters);
     directionFilter.addEventListener('change', applyFilters);
+    showClosedCheck.addEventListener('change', applyFilters);
 
     function applyFilters() {
         const query = searchInput.value.toUpperCase();
         const dir = directionFilter.value;
+        const showClosed = showClosedCheck.checked;
 
         const filtered = allTracks.filter(track => {
             const matchSearch = track.ticker.includes(query);
             const matchDir = dir === 'ALL' || track.direction === dir;
-            return matchSearch && matchDir;
+            const matchStatus = showClosed ? track.status !== 'OPEN' : track.status === 'OPEN';
+            return matchSearch && matchDir && matchStatus;
         });
 
         renderGrid(filtered);
     }
 
     function updateStats() {
-        const activeCount = allTracks.length;
+        const activeCount = allTracks.filter(t => t.status === 'OPEN').length;
         document.getElementById('stat-signals').textContent = activeCount;
 
-        if (activeCount === 0) return;
-
         const completed = allTracks.filter(t => t.status !== "OPEN");
+        document.getElementById('stat-closed').textContent = completed.length;
+        
         const wins = completed.filter(t => t.status === "WIN").length;
         const winRate = completed.length > 0 ? ((wins / completed.length) * 100).toFixed(1) : "0.0";
-
         document.getElementById('stat-winrate').textContent = `${winRate}%`;
+
+        // Breakdown stats
+        const targetWin = completed.filter(t => t.status === 'WIN' && t.exitReason === 'TARGET_PROFIT').length;
+        const targetLoss = completed.filter(t => t.status === 'LOSS' && t.exitReason === 'STOP_LOSS').length;
+        const expiredWin = completed.filter(t => t.status === 'WIN' && t.exitReason === 'TIME_EXPIRED').length;
+        const expiredLoss = completed.filter(t => t.status === 'LOSS' && t.exitReason === 'TIME_EXPIRED').length;
+
+        document.getElementById('stat-target-win').textContent = targetWin;
+        document.getElementById('stat-target-loss').textContent = targetLoss;
+        document.getElementById('stat-expired-win').textContent = expiredWin;
+        document.getElementById('stat-expired-loss').textContent = expiredLoss;
     }
 
     function renderGrid(tracks) {
@@ -86,13 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const isCall = track.direction === 'CALL';
 
-            // Find current return (last day in array)
+            // Use current return (last day in array)
             let currentReturn = 0;
             if (track.dailyChanges.length > 0) {
                 const lastDay = track.dailyChanges[track.dailyChanges.length - 1];
                 currentReturn = lastDay.pctChange;
-                // If it's a PUT, negative price change is positive return
-                if (!isCall) currentReturn = -currentReturn;
             }
 
             const currentClass = currentReturn >= 0 ? 'positive' : 'negative';
@@ -105,14 +119,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? '<span class="badge" style="background: var(--surface-light); color: var(--text-secondary);">OPEN</span>'
                 : `<span class="badge ${track.status === 'WIN' ? 'call' : 'put'}">${track.status}</span>`;
 
+            const isClosed = track.status !== 'OPEN';
+            const returnLabel = isClosed ? 'Final Ret' : 'Current Ret';
+
+            let outcomeHtml = '';
+            if (isClosed) {
+                const reasonMap = {
+                    'TARGET_PROFIT': 'Target Hit 🎯',
+                    'STOP_LOSS': 'Stop Loss ⚠️',
+                    'TIME_EXPIRED': 'Time Expired ⏰'
+                };
+                const reason = reasonMap[track.exitReason] || track.exitReason;
+                const outcomeClass = track.status === 'WIN' ? 'win' : 'loss';
+                outcomeHtml = `
+                    <div class="outcome-info ${outcomeClass}">
+                        <span class="reason-tag">${reason}</span>
+                        <span class="days-tag">Held ${track.daysHeld} Days</span>
+                    </div>
+                `;
+            }
+
             // Build tracking bars
             let barsHtml = '';
             if (track.dailyChanges.length > 0) {
                 const maxAbs = Math.max(...track.dailyChanges.map(c => Math.abs(c.pctChange)), 1); // Avoid div by 0
 
                 track.dailyChanges.forEach(day => {
-                    let ret = day.pctChange;
-                    if (!isCall) ret = -ret; // Invert for puts
+                    const ret = day.pctChange;
 
                     const heightPct = Math.max(10, (Math.abs(ret) / maxAbs) * 100);
                     const barClass = ret >= 0 ? 'profit' : 'loss';
@@ -142,14 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="val">$${track.startPrice ? track.startPrice.toFixed(2) : '--'}</span>
                     </div>
                     <div class="stat-col">
-                        <span class="label">Max Excursion</span>
+                        <span class="label" data-tooltip="The highest profit % reached since entry (Best case scenario)">Max Excursion ⓘ</span>
                         <span class="val ${excursionClass}">${excursionSign}${track.maxExcursionPct}%</span>
                     </div>
                     <div class="stat-col">
-                        <span class="label">Current Ret</span>
+                        <span class="label" data-tooltip="${isClosed ? 'The finalized profit/loss % at the moment the trade closed' : 'The current profit/loss % based on latest price'}">${returnLabel} ⓘ</span>
                         <span class="val ${currentClass}">${currentSign}${currentReturn.toFixed(2)}%</span>
                     </div>
                 </div>
+
+                ${outcomeHtml}
 
                 <div>
                     <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">Lifecycle Track</div>

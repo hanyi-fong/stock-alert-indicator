@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-13T08:06:50.667Z",
+  "updatedAt": "2026-05-13T09:05:45.993Z",
   "verifyDays": 10,
   "targetProfitPct": 30,
   "stopLossPct": 30,
@@ -17,32 +17,32 @@
       "direction": "CALL",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-07T08:06:50.667Z",
+      "dateDetected": "2026-05-07T09:05:45.993Z",
       "startPrice": 150,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-07",
-          "close": 162,
-          "pctChange": 8
+          "close": 161.33,
+          "pctChange": 7.55
         },
         {
           "day": 1,
           "date": "2026-05-08",
-          "close": 174,
-          "pctChange": 16
+          "close": 178.92,
+          "pctChange": 19.28
         },
         {
           "day": 2,
           "date": "2026-05-11",
-          "close": 186,
-          "pctChange": 24
+          "close": 191.68,
+          "pctChange": 27.78
         },
         {
           "day": 3,
           "date": "2026-05-12",
-          "close": 198,
-          "pctChange": 32
+          "close": 203.07,
+          "pctChange": 35.38
         }
       ],
       "maxExcursionPct": 35.2,
@@ -55,26 +55,26 @@
       "direction": "CALL",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-08T08:06:50.667Z",
+      "dateDetected": "2026-05-08T09:05:45.993Z",
       "startPrice": 200,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-08",
-          "close": 179.33,
-          "pctChange": -10.33
+          "close": 183.17,
+          "pctChange": -8.41
         },
         {
           "day": 1,
           "date": "2026-05-11",
-          "close": 158.67,
-          "pctChange": -20.67
+          "close": 159.38,
+          "pctChange": -20.31
         },
         {
           "day": 2,
           "date": "2026-05-12",
-          "close": 138,
-          "pctChange": -31
+          "close": 142.31,
+          "pctChange": -28.84
         }
       ],
       "maxExcursionPct": 2.1,
@@ -87,44 +87,44 @@
       "direction": "CALL",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-05T08:06:50.667Z",
+      "dateDetected": "2026-05-05T09:05:45.993Z",
       "startPrice": 400,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-05",
-          "close": 410,
-          "pctChange": 2.5
+          "close": 413.94,
+          "pctChange": 3.48
         },
         {
           "day": 1,
           "date": "2026-05-06",
-          "close": 420,
-          "pctChange": 5
+          "close": 413.75,
+          "pctChange": 3.44
         },
         {
           "day": 2,
           "date": "2026-05-07",
-          "close": 430,
-          "pctChange": 7.5
+          "close": 421.19,
+          "pctChange": 5.3
         },
         {
           "day": 3,
           "date": "2026-05-08",
-          "close": 440,
-          "pctChange": 10
+          "close": 417.34,
+          "pctChange": 4.33
         },
         {
           "day": 4,
           "date": "2026-05-11",
-          "close": 450,
-          "pctChange": 12.5
+          "close": 415.44,
+          "pctChange": 3.86
         },
         {
           "day": 5,
           "date": "2026-05-12",
-          "close": 460,
-          "pctChange": 15
+          "close": 436.26,
+          "pctChange": 9.06
         }
       ],
       "maxExcursionPct": 18.5,
@@ -137,38 +137,38 @@
       "direction": "CALL",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-06T08:06:50.667Z",
+      "dateDetected": "2026-05-06T09:05:45.993Z",
       "startPrice": 100,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-06",
-          "close": 98,
-          "pctChange": -2
+          "close": 101.59,
+          "pctChange": 1.59
         },
         {
           "day": 1,
           "date": "2026-05-07",
-          "close": 96,
-          "pctChange": -4
+          "close": 101.26,
+          "pctChange": 1.26
         },
         {
           "day": 2,
           "date": "2026-05-08",
-          "close": 94,
-          "pctChange": -6
+          "close": 95.89,
+          "pctChange": -4.11
         },
         {
           "day": 3,
           "date": "2026-05-11",
-          "close": 92,
-          "pctChange": -8
+          "close": 95.67,
+          "pctChange": -4.33
         },
         {
           "day": 4,
           "date": "2026-05-12",
-          "close": 90,
-          "pctChange": -10
+          "close": 91.68,
+          "pctChange": -8.32
         }
       ],
       "maxExcursionPct": 1,
@@ -181,20 +181,20 @@
       "direction": "PUT",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-11T08:06:50.667Z",
+      "dateDetected": "2026-05-11T09:05:45.993Z",
       "startPrice": 300,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-11",
-          "close": 252,
-          "pctChange": 16
+          "close": 257.48,
+          "pctChange": 14.17
         },
         {
           "day": 1,
           "date": "2026-05-12",
-          "close": 204,
-          "pctChange": 32
+          "close": 221.9,
+          "pctChange": 26.03
         }
       ],
       "maxExcursionPct": 34,
@@ -207,32 +207,32 @@
       "direction": "PUT",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-05-07T08:06:50.667Z",
+      "dateDetected": "2026-05-07T09:05:45.993Z",
       "startPrice": 450,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-05-07",
-          "close": 489.37,
-          "pctChange": -8.75
+          "close": 479.67,
+          "pctChange": -6.59
         },
         {
           "day": 1,
           "date": "2026-05-08",
-          "close": 528.75,
-          "pctChange": -17.5
+          "close": 525.14,
+          "pctChange": -16.7
         },
         {
           "day": 2,
           "date": "2026-05-11",
-          "close": 568.13,
-          "pctChange": -26.25
+          "close": 577.02,
+          "pctChange": -28.23
         },
         {
           "day": 3,
           "date": "2026-05-12",
-          "close": 607.5,
-          "pctChange": -35
+          "close": 624.79,
+          "pctChange": -38.84
         }
       ],
       "maxExcursionPct": 0,
@@ -245,68 +245,68 @@
       "direction": "CALL",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-04-29T08:06:50.667Z",
+      "dateDetected": "2026-04-29T09:05:45.993Z",
       "startPrice": 300,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-04-29",
-          "close": 303.6,
-          "pctChange": 1.2
+          "close": 306,
+          "pctChange": 2
         },
         {
           "day": 1,
           "date": "2026-04-30",
-          "close": 307.2,
-          "pctChange": 2.4
+          "close": 301.82,
+          "pctChange": 0.61
         },
         {
           "day": 2,
           "date": "2026-05-01",
-          "close": 310.8,
-          "pctChange": 3.6
+          "close": 293.94,
+          "pctChange": -2.02
         },
         {
           "day": 3,
           "date": "2026-05-04",
-          "close": 314.4,
-          "pctChange": 4.8
+          "close": 302.81,
+          "pctChange": 0.94
         },
         {
           "day": 4,
           "date": "2026-05-05",
-          "close": 318,
-          "pctChange": 6
+          "close": 307.89,
+          "pctChange": 2.63
         },
         {
           "day": 5,
           "date": "2026-05-06",
-          "close": 321.6,
-          "pctChange": 7.2
+          "close": 301.18,
+          "pctChange": 0.39
         },
         {
           "day": 6,
           "date": "2026-05-07",
-          "close": 325.2,
-          "pctChange": 8.4
+          "close": 303.59,
+          "pctChange": 1.2
         },
         {
           "day": 7,
           "date": "2026-05-08",
-          "close": 328.8,
-          "pctChange": 9.6
+          "close": 302.66,
+          "pctChange": 0.89
         },
         {
           "day": 8,
           "date": "2026-05-11",
-          "close": 332.4,
-          "pctChange": 10.8
+          "close": 313.07,
+          "pctChange": 4.36
         },
         {
           "day": 9,
           "date": "2026-05-12",
-          "close": 336,
-          "pctChange": 12
+          "close": 326.89,
+          "pctChange": 8.96
         }
       ],
       "maxExcursionPct": 15,
@@ -319,68 +319,68 @@
       "direction": "PUT",
       "score": 8.5,
       "isEarningsPlay": false,
-      "dateDetected": "2026-04-29T08:06:50.667Z",
+      "dateDetected": "2026-04-29T09:05:45.993Z",
       "startPrice": 120,
       "dailyChanges": [
         {
           "day": 0,
           "date": "2026-04-29",
-          "close": 120.6,
-          "pctChange": -0.5
+          "close": 115.93,
+          "pctChange": 3.4
         },
         {
           "day": 1,
           "date": "2026-04-30",
-          "close": 121.2,
-          "pctChange": -1
+          "close": 117.64,
+          "pctChange": 1.97
         },
         {
           "day": 2,
           "date": "2026-05-01",
-          "close": 121.8,
-          "pctChange": -1.5
+          "close": 116.19,
+          "pctChange": 3.17
         },
         {
           "day": 3,
           "date": "2026-05-04",
-          "close": 122.4,
-          "pctChange": -2
+          "close": 118.5,
+          "pctChange": 1.25
         },
         {
           "day": 4,
           "date": "2026-05-05",
-          "close": 123,
-          "pctChange": -2.5
+          "close": 123.77,
+          "pctChange": -3.14
         },
         {
           "day": 5,
           "date": "2026-05-06",
-          "close": 123.6,
-          "pctChange": -3
+          "close": 127.16,
+          "pctChange": -5.96
         },
         {
           "day": 6,
           "date": "2026-05-07",
-          "close": 124.2,
-          "pctChange": -3.5
+          "close": 125.36,
+          "pctChange": -4.47
         },
         {
           "day": 7,
           "date": "2026-05-08",
-          "close": 124.8,
-          "pctChange": -4
+          "close": 128.39,
+          "pctChange": -6.99
         },
         {
           "day": 8,
           "date": "2026-05-11",
-          "close": 125.4,
-          "pctChange": -4.5
+          "close": 129.04,
+          "pctChange": -7.53
         },
         {
           "day": 9,
           "date": "2026-05-12",
-          "close": 126,
-          "pctChange": -5
+          "close": 126.77,
+          "pctChange": -5.64
         }
       ],
       "maxExcursionPct": 5,

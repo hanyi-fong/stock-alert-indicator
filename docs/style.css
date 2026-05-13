@@ -69,7 +69,37 @@ header {
 
 .stats {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
+    align-items: stretch;
+}
+
+.stat-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.stat-group.breakdown {
+    border-left: 1px solid var(--border-color);
+    padding-left: 2rem;
+}
+
+.stat-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.group-header {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.group-row {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .stat-box {
@@ -77,9 +107,34 @@ header {
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1.25rem;
     text-align: right;
     transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 100px;
+}
+
+.stat-box.highlight {
+    padding: 1rem 1.5rem;
+    background: rgba(56, 189, 248, 0.05);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.stat-box.mini {
+    padding: 0.5rem 0.75rem;
+    min-width: 80px;
+}
+
+.stat-box.accent-call {
+    border-color: var(--accent-call);
+    color: var(--accent-call);
+}
+
+.stat-box.accent-put {
+    border-color: var(--accent-put);
+    color: var(--accent-put);
 }
 
 .stat-box:hover {
@@ -88,15 +143,23 @@ header {
 
 .stat-value {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
 }
 
+.stat-box.highlight .stat-value {
+    font-size: 1.5rem;
+}
+
+.stat-box.mini .stat-value {
+    font-size: 1.1rem;
+}
+
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .filters {
@@ -125,6 +188,74 @@ input:focus, select:focus {
     margin-left: auto;
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+/* Switch Styling */
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-card);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.toggle-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 18px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #38bdf8;
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }
 
 .grid {
@@ -255,10 +386,69 @@ input:focus, select:focus {
 .day-bar.profit { background: var(--accent-call); }
 .day-bar.loss { background: var(--accent-put); }
 
+/* Tooltip Styling */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: #1e293b;
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    white-space: normal;
+    width: 160px;
+    text-align: center;
+    z-index: 100;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    pointer-events: none;
+    line-height: 1.4;
+}
+
 .loading-state {
     text-align: center;
     padding: 4rem;
     color: var(--text-secondary);
+}
+
+.outcome-info {
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.outcome-info.win { 
+    background: var(--accent-call-bg);
+    border-color: var(--accent-call); 
+}
+
+.outcome-info.loss { 
+    background: var(--accent-put-bg);
+    border-color: var(--accent-put); 
+}
+
+.reason-tag {
+    font-weight: 700;
+}
+
+.days-tag {
+    font-size: 0.75rem;
+    opacity: 0.8;
 }
 
 .spinner {
@@ -276,7 +466,44 @@ input:focus, select:focus {
 }
 
 @media (max-width: 768px) {
-    header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-    .filters { flex-direction: column; align-items: stretch; }
-    .last-updated { margin-left: 0; }
+    .container { padding: 1rem; }
+    header { flex-direction: column; align-items: stretch; gap: 1.5rem; margin-bottom: 2rem; }
+    
+    .header-content h1 { font-size: 2rem; }
+    
+    .stats { flex-direction: column; width: 100%; gap: 1.5rem; }
+    
+    .stat-group { 
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .stat-group.breakdown { 
+        border-left: none; 
+        padding-left: 0; 
+        border-top: 1px solid var(--border-color); 
+        padding-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .group-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .stat-box { min-width: 0; padding: 0.75rem 0.5rem; }
+    .stat-box.highlight { padding: 0.75rem 0.5rem; }
+    .stat-box.mini { padding: 0.5rem; }
+    .stat-value { font-size: 1.1rem; }
+    .stat-box.highlight .stat-value { font-size: 1.2rem; }
+    
+    .filters { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+    .toggle-group { justify-content: space-between; }
+    .last-updated { margin-left: 0; text-align: center; font-size: 0.8rem; }
+    
+    .grid { grid-template-columns: 1fr; }
 }

@@ -24,13 +24,50 @@
                 <p>10-Day Performance Verification Engine</p>
             </div>
             <div class="stats" id="global-stats">
-                <div class="stat-box">
-                    <span class="stat-value" id="stat-signals">0</span>
-                    <span class="stat-label">Active Signals</span>
+                <!-- Core Summary -->
+                <div class="stat-group">
+                    <div class="stat-box highlight">
+                        <span class="stat-value" id="stat-signals">0</span>
+                        <span class="stat-label">Active</span>
+                    </div>
+                    <div class="stat-box highlight">
+                        <span class="stat-value" id="stat-closed">0</span>
+                        <span class="stat-label">Closed</span>
+                    </div>
+                    <div class="stat-box highlight">
+                        <span class="stat-value" id="stat-winrate">0%</span>
+                        <span class="stat-label">Win Rate</span>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="stat-winrate">0%</span>
-                    <span class="stat-label">Overall Win Rate</span>
+
+                <!-- Detailed Breakdown -->
+                <div class="stat-group breakdown">
+                    <div class="stat-column">
+                        <div class="group-header">Target Performance</div>
+                        <div class="group-row">
+                            <div class="stat-box accent-call mini">
+                                <span class="stat-value" id="stat-target-win">0</span>
+                                <span class="stat-label">Win</span>
+                            </div>
+                            <div class="stat-box accent-put mini">
+                                <span class="stat-value" id="stat-target-loss">0</span>
+                                <span class="stat-label">Loss</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-column">
+                        <div class="group-header">Time Performance</div>
+                        <div class="group-row">
+                            <div class="stat-box mini">
+                                <span class="stat-value" id="stat-expired-win">0</span>
+                                <span class="stat-label">Win</span>
+                            </div>
+                            <div class="stat-box mini">
+                                <span class="stat-value" id="stat-expired-loss">0</span>
+                                <span class="stat-label">Loss</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -43,6 +80,13 @@
                     <option value="CALL">CALL</option>
                     <option value="PUT">PUT</option>
                 </select>
+                <div class="toggle-group">
+                    <label class="switch">
+                        <input type="checkbox" id="show-closed">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-text">Show Closed</span>
+                </div>
                 <div class="last-updated" id="last-updated">Last Updated: --</div>
             </div>
 

@@ -18,10 +18,15 @@ function createTrack(ticker, direction, startPrice, days, trajectory, status, ma
     let currentPrice = startPrice;
 
     for (let i = 0; i < days; i++) {
-        // distribute the trajectory over the days
-        const step = trajectory / days;
-        const change = step * (1 + (Math.random() * 0.4 - 0.2)); // add some noise
-        currentPrice = startPrice * (1 + ((trajectory / days * (i+1)) / 100));
+        // Create a "bumpy" random walk path
+        // We want to end up roughly at the trajectory, but with ups and downs
+        const trendPerDay = trajectory / days;
+        const volatility = 8; // +/- 4% random noise daily
+        const noise = (Math.random() * volatility) - (volatility / 2);
+        
+        // Apply change to currentPrice
+        const dailyChangePct = trendPerDay + noise;
+        currentPrice = currentPrice * (1 + (dailyChangePct / 100));
 
         let pctChange = ((currentPrice - startPrice) / startPrice) * 100;
         if (direction === "PUT") {
