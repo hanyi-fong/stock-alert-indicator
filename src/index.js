@@ -254,11 +254,7 @@ async function main() {
   }
 
   await sendGoogleChatAlert(topSignals, runTime);
-  
-  if (session !== "manual") {
-    saveScanResult(topSignals, session);
-  }
-
+  saveScanResult(topSignals, session);
 
 }
 

@@ -28,8 +28,19 @@ function getDateString() {
  */
 export function saveScanResult(signals, session) {
   const dateStr = getDateString();
-  const filename = session.startsWith("manual") ? `${session}.json` : `${dateStr}-${session}.json`;
-  const filePath = path.join(HISTORY_DIR, filename);
+  let filePath;
+
+  if (session === "manual") {
+    const timestamp = Date.now();
+    const manualDir = path.join(HISTORY_DIR, "manual");
+    if (!fs.existsSync(manualDir)) {
+      fs.mkdirSync(manualDir, { recursive: true });
+    }
+    filePath = path.join(manualDir, `${timestamp}.json`);
+  } else {
+    const filename = session.startsWith("manual") ? `${session}.json` : `${dateStr}-${session}.json`;
+    filePath = path.join(HISTORY_DIR, filename);
+  }
 
   const payload = {
     timestamp: new Date().toISOString(),

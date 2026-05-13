@@ -76,11 +76,15 @@ jobs:
           TASTYTRADE_WATCHLISTS: ${{ vars.TASTYTRADE_WATCHLISTS }}
           WATCHLIST: ${{ inputs.watchlist != '' && inputs.watchlist || vars.WATCHLIST }}
         run: |
-          HOUR=$(date -u +%H)
-          if [ "$HOUR" -eq "13" ]; then
-            npm run scan -- --session morning
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            npm run scan -- --session manual
           else
-            npm run scan -- --session afternoon
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -eq "13" ]; then
+              npm run scan -- --session morning
+            else
+              npm run scan -- --session afternoon
+            fi
           fi
 
       - name: Commit history files
