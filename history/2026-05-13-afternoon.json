@@ -1,108 +1,39 @@
 {
-  "timestamp": "2026-05-13T16:07:45.243Z",
+  "timestamp": "2026-05-13T21:09:46.991Z",
   "session": "afternoon",
   "signals": [
     {
-      "ticker": "AIRS",
+      "ticker": "RR",
       "watchlists": [
         "Liquid Symbols"
       ],
-      "score": -5.5,
-      "direction": "PUT",
-      "isEarningsPlay": false,
-      "pcrSignal": null,
-      "rsi": 75,
-      "macd": {
-        "macd": 0.3782,
-        "signal": 0.1934,
-        "hist": 0.1848
-      },
-      "dayChangePct": 8.17,
-      "volumeRatio": 0.39,
-      "volumeSpike": false,
-      "lastClose": 4.5,
-      "momentum5dPct": 30.06,
-      "atrPct": 9.04,
-      "adx": 29,
-      "adxRegime": "TRENDING",
-      "rsiDivergence": false,
-      "rsiDivergenceType": null,
-      "ivr": 43.4233365,
-      "ivIndex": 174.05002240000002,
-      "beta": 2.070172931,
-      "liquidityRating": 3,
-      "earningsNextDate": null,
-      "daysToEarnings": null,
-      "pcr": null,
-      "chainDte": null,
-      "expiryDate": null,
-      "reasons": [
-        {
-          "indicator": "rsi",
-          "message": "RSI extreme overbought (75.0) (-1) — trending mkt, no divergence"
-        },
-        {
-          "indicator": "bb",
-          "message": "BB upper band breach",
-          "score": -1
-        },
-        {
-          "indicator": "momentum",
-          "message": "⚠️ Overextended (+30.1% in 5d) — exhaustion risk",
-          "score": -2
-        },
-        {
-          "indicator": "coherence",
-          "message": "⚠️ Conflicting signals: momentum bullish (+30.1%) but RSI overbought (75) — mixed conviction"
-        },
-        {
-          "indicator": "atr",
-          "message": "ATR 9.0% (high volatility)",
-          "score": -0.5
-        },
-        {
-          "indicator": "ivr",
-          "message": "IVR 43 (elevated) neutralized (stock overextended)"
-        },
-        {
-          "indicator": "beta",
-          "message": "Beta 2.1 (high-amplitude)",
-          "score": -1
-        }
-      ]
-    },
-    {
-      "ticker": "BABA",
-      "watchlists": [
-        "High Options Volume"
-      ],
-      "score": 5,
+      "score": 7,
       "direction": "CALL",
       "isEarningsPlay": false,
       "pcrSignal": "CALL-HEAVY",
-      "rsi": 60.1,
+      "rsi": 60.6,
       "macd": {
-        "macd": 2.9168,
-        "signal": 2.7207,
-        "hist": 0.1961
+        "macd": 0.1325,
+        "signal": 0.1255,
+        "hist": 0.007
       },
-      "dayChangePct": 6.24,
-      "volumeRatio": 2.63,
+      "dayChangePct": 9.73,
+      "volumeRatio": 2.66,
       "volumeSpike": true,
-      "lastClose": 143.19000244140625,
-      "momentum5dPct": 1.55,
-      "atrPct": 3.5,
-      "adx": 14.1,
-      "adxRegime": "RANGING",
+      "lastClose": 2.819999933242798,
+      "momentum5dPct": 5.22,
+      "atrPct": 8.14,
+      "adx": 26,
+      "adxRegime": "TRENDING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 73.4198409,
-      "ivIndex": 51.8868537,
-      "beta": 0.550056,
+      "ivr": 35.4119664,
+      "ivIndex": 123.85029,
+      "beta": 2.057651577,
       "liquidityRating": 4,
       "earningsNextDate": null,
       "daysToEarnings": null,
-      "pcr": 0.166,
+      "pcr": 0.127,
       "chainDte": 2,
       "expiryDate": "2026-05-15",
       "reasons": [
@@ -113,17 +44,32 @@
         },
         {
           "indicator": "volume",
-          "message": "Volume spike 2.63x + up 6.24%",
+          "message": "Volume spike 2.66x + up 9.73%",
           "score": 1
         },
         {
+          "indicator": "momentum",
+          "message": "5d momentum +5.2%",
+          "score": 1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 8.1% (high volatility)",
+          "score": 0.5
+        },
+        {
           "indicator": "ivr",
-          "message": "IVR 73 🔥 (high)",
+          "message": "IVR 35 (elevated)",
+          "score": 0.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 2.1 (high-amplitude)",
           "score": 1
         },
         {
           "indicator": "pcr",
-          "message": "PCR 0.17 (call-heavy flow)",
+          "message": "PCR 0.13 (call-heavy flow)",
           "score": 1
         }
       ]
@@ -133,28 +79,28 @@
       "watchlists": [
         "High Options Volume"
       ],
-      "score": 5,
+      "score": 5.5,
       "direction": "CALL",
       "isEarningsPlay": false,
       "pcrSignal": "CALL-HEAVY",
-      "rsi": 63.4,
+      "rsi": 61.8,
       "macd": {
-        "macd": 1.2114,
-        "signal": 0.8775,
-        "hist": 0.3338
+        "macd": 1.1308,
+        "signal": 0.8614,
+        "hist": 0.2694
       },
-      "dayChangePct": 3.24,
-      "volumeRatio": 0.47,
+      "dayChangePct": 1.71,
+      "volumeRatio": 0.94,
       "volumeSpike": false,
-      "lastClose": 68.16999816894531,
-      "momentum5dPct": 12.47,
-      "atrPct": 3.91,
-      "adx": 22.5,
+      "lastClose": 67.16000366210938,
+      "momentum5dPct": 10.81,
+      "atrPct": 4.02,
+      "adx": 22.7,
       "adxRegime": "TRENDING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 67.6461678,
-      "ivIndex": 55.2049109,
+      "ivr": 70.4029082,
+      "ivIndex": 54.733926200000006,
       "beta": 1.353160415,
       "liquidityRating": 4,
       "earningsNextDate": null,
@@ -170,12 +116,17 @@
         },
         {
           "indicator": "momentum",
-          "message": "5d momentum +12.5%",
+          "message": "5d momentum +10.8%",
           "score": 1
         },
         {
+          "indicator": "atr",
+          "message": "ATR 4.0% (high volatility)",
+          "score": 0.5
+        },
+        {
           "indicator": "ivr",
-          "message": "IVR 68 🔥 (high)",
+          "message": "IVR 70 🔥 (high)",
           "score": 1
         },
         {
@@ -186,34 +137,35 @@
       ]
     },
     {
-      "ticker": "RR",
+      "ticker": "RKLB",
       "watchlists": [
-        "Liquid Symbols"
+        "High Options Volume",
+        "52 Week Near High"
       ],
-      "score": 5,
-      "direction": "CALL",
+      "score": -5.5,
+      "direction": "PUT",
       "isEarningsPlay": false,
       "pcrSignal": null,
-      "rsi": 59.8,
+      "rsi": 75,
       "macd": {
-        "macd": 0.1301,
-        "signal": 0.125,
-        "hist": 0.0051
+        "macd": 10.8013,
+        "signal": 6.9101,
+        "hist": 3.8912
       },
-      "dayChangePct": 8.56,
-      "volumeRatio": 1.75,
+      "dayChangePct": 5.61,
+      "volumeRatio": 0.97,
       "volumeSpike": false,
-      "lastClose": 2.7899999618530273,
-      "momentum5dPct": 4.1,
-      "atrPct": 8.23,
-      "adx": 26,
+      "lastClose": 124.1500015258789,
+      "momentum5dPct": 57.99,
+      "atrPct": 6.9,
+      "adx": 25.1,
       "adxRegime": "TRENDING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 33.8687844,
-      "ivIndex": 119.00017899999999,
-      "beta": 2.057651577,
-      "liquidityRating": 4,
+      "ivr": 62.59445839999999,
+      "ivIndex": 93.3351382,
+      "beta": 4.005061,
+      "liquidityRating": 3,
       "earningsNextDate": null,
       "daysToEarnings": null,
       "pcr": null,
@@ -221,28 +173,240 @@
       "expiryDate": null,
       "reasons": [
         {
+          "indicator": "rsi",
+          "message": "RSI overbought (75.0) (-1) — trending mkt, no divergence"
+        },
+        {
+          "indicator": "bb",
+          "message": "BB upper band breach",
+          "score": -1
+        },
+        {
+          "indicator": "momentum",
+          "message": "⚠️ Overextended (+58.0% in 5d) — exhaustion risk",
+          "score": -2
+        },
+        {
+          "indicator": "coherence",
+          "message": "⚠️ Conflicting signals: momentum bullish (+58.0%) but RSI overbought (75) — mixed conviction"
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 6.9% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 63 🔥 (high) neutralized (stock overextended)"
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 4.0 (high-amplitude)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "AIRS",
+      "watchlists": [
+        "Liquid Symbols"
+      ],
+      "score": -5.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 76.4,
+      "macd": {
+        "macd": 0.3909,
+        "signal": 0.196,
+        "hist": 0.195
+      },
+      "dayChangePct": 12.02,
+      "volumeRatio": 1.01,
+      "volumeSpike": false,
+      "lastClose": 4.659999847412109,
+      "momentum5dPct": 34.68,
+      "atrPct": 8.91,
+      "adx": 29.2,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 35.458052099999996,
+      "ivIndex": 158.6158517,
+      "beta": 2.070172931,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
+      "reasons": [
+        {
+          "indicator": "rsi",
+          "message": "RSI extreme overbought (76.4) (-1) — trending mkt, no divergence"
+        },
+        {
+          "indicator": "bb",
+          "message": "BB upper band breach",
+          "score": -1
+        },
+        {
+          "indicator": "momentum",
+          "message": "⚠️ Overextended (+34.7% in 5d) — exhaustion risk",
+          "score": -2
+        },
+        {
+          "indicator": "coherence",
+          "message": "⚠️ Conflicting signals: momentum bullish (+34.7%) but RSI overbought (76.4) — mixed conviction"
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 8.9% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 35 (elevated) neutralized (stock overextended)"
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 2.1 (high-amplitude)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "F",
+      "watchlists": [
+        "High Options Volume",
+        "Liquid Symbols",
+        "S&P 100"
+      ],
+      "score": 5,
+      "direction": "CALL",
+      "isEarningsPlay": false,
+      "pcrSignal": "NEUTRAL",
+      "rsi": 68.3,
+      "macd": {
+        "macd": 0.1557,
+        "signal": 0.1261,
+        "hist": 0.0296
+      },
+      "dayChangePct": 13.18,
+      "volumeRatio": 5.09,
+      "volumeSpike": true,
+      "lastClose": 13.569999694824219,
+      "momentum5dPct": 11.41,
+      "atrPct": 3.33,
+      "adx": 17.6,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 115.4531947,
+      "ivIndex": 47.7109326,
+      "beta": 1.701138542,
+      "liquidityRating": 4,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 0.668,
+      "chainDte": 2,
+      "expiryDate": "2026-05-15",
+      "reasons": [
+        {
           "indicator": "macd",
           "message": "MACD bullish crossover",
           "score": 2
         },
         {
-          "indicator": "momentum",
-          "message": "5d momentum +4.1%",
+          "indicator": "bb",
+          "message": "BB upper band breach",
+          "score": -1
+        },
+        {
+          "indicator": "volume",
+          "message": "Volume spike 5.09x + up 13.18%",
           "score": 1
         },
         {
-          "indicator": "atr",
-          "message": "ATR 8.2% (high volatility)",
-          "score": 0.5
+          "indicator": "momentum",
+          "message": "5d momentum +11.4%",
+          "score": 1
         },
         {
           "indicator": "ivr",
-          "message": "IVR 34 (elevated)",
-          "score": 0.5
+          "message": "IVR 115 🔥🔥 (very high)",
+          "score": 1.5
         },
         {
           "indicator": "beta",
-          "message": "Beta 2.1 (high-amplitude)",
+          "message": "Beta 1.7",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "ticker": "ALIT",
+      "watchlists": [
+        "tasty Fast Movers"
+      ],
+      "score": -5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "CALL-HEAVY",
+      "rsi": 52.1,
+      "macd": {
+        "macd": 0.054,
+        "signal": 0.0555,
+        "hist": -0.0015
+      },
+      "dayChangePct": 9.02,
+      "volumeRatio": 1.26,
+      "volumeSpike": false,
+      "lastClose": 0.7914999723434448,
+      "momentum5dPct": -9.02,
+      "atrPct": 11.5,
+      "adx": 35.7,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 77.6937251,
+      "ivIndex": 196.1005447,
+      "beta": 2.748343,
+      "liquidityRating": 4,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 0.11,
+      "chainDte": 2,
+      "expiryDate": "2026-05-15",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -9.0%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 11.5% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 78 🔥🔥 (very high)",
+          "score": -1.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 2.7 (high-amplitude)",
+          "score": -1
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 0.11 (call-heavy flow)",
           "score": 1
         }
       ]
@@ -257,24 +421,24 @@
       "direction": "PUT",
       "isEarningsPlay": false,
       "pcrSignal": null,
-      "rsi": 56.2,
+      "rsi": 57.6,
       "macd": {
-        "macd": 0.9771,
-        "signal": 1.021,
-        "hist": -0.044
+        "macd": 0.9906,
+        "signal": 1.0238,
+        "hist": -0.0331
       },
-      "dayChangePct": -2.52,
-      "volumeRatio": 0.33,
+      "dayChangePct": -1.26,
+      "volumeRatio": 0.62,
       "volumeSpike": false,
-      "lastClose": 13.13010025024414,
-      "momentum5dPct": -6.08,
-      "atrPct": 7.19,
+      "lastClose": 13.300000190734863,
+      "momentum5dPct": -4.86,
+      "atrPct": 7.1,
       "adx": 23.9,
       "adxRegime": "TRENDING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 30.5766138,
-      "ivIndex": 89.0856439,
+      "ivr": 30.9671491,
+      "ivIndex": 89.3007755,
       "beta": 5.326236,
       "liquidityRating": 4,
       "earningsNextDate": null,
@@ -290,12 +454,12 @@
         },
         {
           "indicator": "momentum",
-          "message": "5d momentum -6.1%",
+          "message": "5d momentum -4.9%",
           "score": -1
         },
         {
           "indicator": "atr",
-          "message": "ATR 7.2% (high volatility)",
+          "message": "ATR 7.1% (high volatility)",
           "score": -0.5
         },
         {
@@ -311,66 +475,55 @@
       ]
     },
     {
-      "ticker": "SOXL",
+      "ticker": "CPB",
       "watchlists": [
-        "High Options Volume"
+        "tasty IVR",
+        "52 Week Near Low"
       ],
       "score": -4.5,
       "direction": "PUT",
       "isEarningsPlay": false,
-      "pcrSignal": null,
-      "rsi": 71.6,
+      "pcrSignal": "NEUTRAL",
+      "rsi": 42.2,
       "macd": {
-        "macd": 28.9536,
-        "signal": 25.5086,
-        "hist": 3.4451
+        "macd": -0.1465,
+        "signal": -0.1443,
+        "hist": -0.0021
       },
-      "dayChangePct": 5.32,
-      "volumeRatio": 0.6,
+      "dayChangePct": -0.2,
+      "volumeRatio": 0.88,
       "volumeSpike": false,
-      "lastClose": 181.69009399414062,
-      "momentum5dPct": 19.45,
-      "atrPct": 7.66,
-      "adx": 46.1,
-      "adxRegime": "STRONG_TREND",
+      "lastClose": 20.350000381469727,
+      "momentum5dPct": -4.24,
+      "atrPct": 2.99,
+      "adx": 12.5,
+      "adxRegime": "RANGING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 97.11641920000001,
-      "ivIndex": 150.4275878,
-      "beta": 5.198472851,
+      "ivr": 100.53908359999998,
+      "ivIndex": 39.452384800000004,
+      "beta": -0.004913535,
       "liquidityRating": 3,
       "earningsNextDate": null,
       "daysToEarnings": null,
-      "pcr": null,
-      "chainDte": null,
-      "expiryDate": null,
+      "pcr": 0.858,
+      "chainDte": 2,
+      "expiryDate": "2026-05-15",
       "reasons": [
         {
-          "indicator": "rsi",
-          "message": "RSI overbought (71.6) (-1) ⚠️ discounted — strong trend (ADX: 46.1)"
-        },
-        {
-          "indicator": "momentum",
-          "message": "⚠️ Overextended (+19.4% in 5d) — exhaustion risk",
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
           "score": -2
         },
         {
-          "indicator": "coherence",
-          "message": "⚠️ Conflicting signals: momentum bullish (+19.4%) but RSI overbought (71.6) — mixed conviction"
-        },
-        {
-          "indicator": "atr",
-          "message": "ATR 7.7% (high volatility)",
-          "score": -0.5
+          "indicator": "momentum",
+          "message": "5d momentum -4.2%",
+          "score": -1
         },
         {
           "indicator": "ivr",
-          "message": "IVR 97 🔥🔥 (very high) neutralized (stock overextended)"
-        },
-        {
-          "indicator": "beta",
-          "message": "Beta 5.2 (high-amplitude)",
-          "score": -1
+          "message": "IVR 101 🔥🔥 (very high)",
+          "score": -1.5
         }
       ]
     },
@@ -383,24 +536,24 @@
       "direction": "CALL",
       "isEarningsPlay": false,
       "pcrSignal": null,
-      "rsi": 25,
+      "rsi": 24.8,
       "macd": {
-        "macd": -6.0707,
-        "signal": -6.7146,
-        "hist": 0.6439
+        "macd": -6.0814,
+        "signal": -6.7167,
+        "hist": 0.6353
       },
-      "dayChangePct": -5.2,
-      "volumeRatio": 1.23,
+      "dayChangePct": -6.7,
+      "volumeRatio": 1.75,
       "volumeSpike": false,
-      "lastClose": 8.484999656677246,
-      "momentum5dPct": -19.95,
-      "atrPct": 21.95,
+      "lastClose": 8.350000381469727,
+      "momentum5dPct": -21.23,
+      "atrPct": 22.46,
       "adx": 35.8,
       "adxRegime": "TRENDING",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 96.85650129999999,
-      "ivIndex": 146.3390599,
+      "ivr": 96.4992856,
+      "ivIndex": 148.7330777,
       "beta": -4.977470991,
       "liquidityRating": 4,
       "earningsNextDate": null,
@@ -411,25 +564,25 @@
       "reasons": [
         {
           "indicator": "rsi",
-          "message": "RSI oversold (25.0) (+1) — trending mkt, no divergence"
+          "message": "RSI extreme oversold (24.8) (+1) — trending mkt, no divergence"
         },
         {
           "indicator": "momentum",
-          "message": "⚠️ Overextended (-19.9% in 5d) — exhaustion risk",
+          "message": "⚠️ Overextended (-21.2% in 5d) — exhaustion risk",
           "score": 2
         },
         {
           "indicator": "coherence",
-          "message": "⚠️ Conflicting signals: momentum bearish (-19.9%) but RSI oversold (25) — mixed conviction"
+          "message": "⚠️ Conflicting signals: momentum bearish (-21.2%) but RSI oversold (24.8) — mixed conviction"
         },
         {
           "indicator": "atr",
-          "message": "ATR 21.9% (high volatility)",
+          "message": "ATR 22.5% (high volatility)",
           "score": 0.5
         },
         {
           "indicator": "ivr",
-          "message": "IVR 97 🔥🔥 (very high) neutralized (stock overextended)"
+          "message": "IVR 96 🔥🔥 (very high) neutralized (stock overextended)"
         },
         {
           "indicator": "beta",
@@ -439,211 +592,66 @@
       ]
     },
     {
-      "ticker": "GENI",
+      "ticker": "SOXL",
       "watchlists": [
-        "Liquid Symbols"
+        "High Options Volume"
       ],
       "score": -4.5,
       "direction": "PUT",
       "isEarningsPlay": false,
-      "pcrSignal": "CALL-HEAVY",
-      "rsi": 44.3,
+      "pcrSignal": null,
+      "rsi": 72.1,
       "macd": {
-        "macd": -0.021,
-        "signal": -0.0148,
-        "hist": -0.0062
+        "macd": 29.157,
+        "signal": 25.5493,
+        "hist": 3.6078
       },
-      "dayChangePct": -2.92,
-      "volumeRatio": 0.42,
+      "dayChangePct": 6.79,
+      "volumeRatio": 0.88,
       "volumeSpike": false,
-      "lastClose": 4.320000171661377,
-      "momentum5dPct": -9.62,
-      "atrPct": 6.75,
-      "adx": 27,
-      "adxRegime": "TRENDING",
+      "lastClose": 184.24000549316406,
+      "momentum5dPct": 21.13,
+      "atrPct": 7.7,
+      "adx": 46.3,
+      "adxRegime": "STRONG_TREND",
       "rsiDivergence": false,
       "rsiDivergenceType": null,
-      "ivr": 77.43844130000001,
-      "ivIndex": 164.9795996,
-      "beta": 1.695147,
-      "liquidityRating": 4,
-      "earningsNextDate": null,
-      "daysToEarnings": null,
-      "pcr": 0.032,
-      "chainDte": 2,
-      "expiryDate": "2026-05-15",
-      "reasons": [
-        {
-          "indicator": "macd",
-          "message": "MACD bearish crossover",
-          "score": -2
-        },
-        {
-          "indicator": "momentum",
-          "message": "5d momentum -9.6%",
-          "score": -1
-        },
-        {
-          "indicator": "atr",
-          "message": "ATR 6.8% (high volatility)",
-          "score": -0.5
-        },
-        {
-          "indicator": "ivr",
-          "message": "IVR 77 🔥🔥 (very high)",
-          "score": -1.5
-        },
-        {
-          "indicator": "beta",
-          "message": "Beta 1.7",
-          "score": -0.5
-        },
-        {
-          "indicator": "pcr",
-          "message": "PCR 0.03 (call-heavy flow)",
-          "score": 1
-        }
-      ]
-    },
-    {
-      "ticker": "RKLB",
-      "watchlists": [
-        "High Options Volume",
-        "52 Week Near High"
-      ],
-      "score": -4.5,
-      "direction": "PUT",
-      "isEarningsPlay": false,
-      "pcrSignal": "CALL-HEAVY",
-      "rsi": 74.8,
-      "macd": {
-        "macd": 10.7674,
-        "signal": 6.9033,
-        "hist": 3.8641
-      },
-      "dayChangePct": 5.24,
-      "volumeRatio": 0.57,
-      "volumeSpike": false,
-      "lastClose": 123.7249984741211,
-      "momentum5dPct": 57.45,
-      "atrPct": 6.92,
-      "adx": 25.1,
-      "adxRegime": "TRENDING",
-      "rsiDivergence": false,
-      "rsiDivergenceType": null,
-      "ivr": 66.1418976,
-      "ivIndex": 96.45845659999999,
-      "beta": 4.005061,
+      "ivr": 95.5777921,
+      "ivIndex": 150.1535278,
+      "beta": 5.198472851,
       "liquidityRating": 3,
       "earningsNextDate": null,
       "daysToEarnings": null,
-      "pcr": 0.139,
-      "chainDte": 2,
-      "expiryDate": "2026-05-15",
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
       "reasons": [
         {
           "indicator": "rsi",
-          "message": "RSI overbought (74.8) (-1) — trending mkt, no divergence"
-        },
-        {
-          "indicator": "bb",
-          "message": "BB upper band breach",
-          "score": -1
+          "message": "RSI overbought (72.1) (-1) ⚠️ discounted — strong trend (ADX: 46.3)"
         },
         {
           "indicator": "momentum",
-          "message": "⚠️ Overextended (+57.5% in 5d) — exhaustion risk",
+          "message": "⚠️ Overextended (+21.1% in 5d) — exhaustion risk",
           "score": -2
         },
         {
           "indicator": "coherence",
-          "message": "⚠️ Conflicting signals: momentum bullish (+57.5%) but RSI overbought (74.8) — mixed conviction"
+          "message": "⚠️ Conflicting signals: momentum bullish (+21.1%) but RSI overbought (72.1) — mixed conviction"
         },
         {
           "indicator": "atr",
-          "message": "ATR 6.9% (high volatility)",
+          "message": "ATR 7.7% (high volatility)",
           "score": -0.5
         },
         {
           "indicator": "ivr",
-          "message": "IVR 66 🔥 (high) neutralized (stock overextended)"
+          "message": "IVR 96 🔥🔥 (very high) neutralized (stock overextended)"
         },
         {
           "indicator": "beta",
-          "message": "Beta 4.0 (high-amplitude)",
+          "message": "Beta 5.2 (high-amplitude)",
           "score": -1
-        },
-        {
-          "indicator": "pcr",
-          "message": "PCR 0.14 (call-heavy flow)",
-          "score": 1
-        }
-      ]
-    },
-    {
-      "ticker": "ALIT",
-      "watchlists": [
-        "tasty Fast Movers"
-      ],
-      "score": -4.5,
-      "direction": "PUT",
-      "isEarningsPlay": false,
-      "pcrSignal": "CALL-HEAVY",
-      "rsi": 48.4,
-      "macd": {
-        "macd": 0.0499,
-        "signal": 0.0547,
-        "hist": -0.0048
-      },
-      "dayChangePct": 1.89,
-      "volumeRatio": 0.44,
-      "volumeSpike": false,
-      "lastClose": 0.7397000193595886,
-      "momentum5dPct": -14.98,
-      "atrPct": 11.85,
-      "adx": 35.7,
-      "adxRegime": "TRENDING",
-      "rsiDivergence": false,
-      "rsiDivergenceType": null,
-      "ivr": 62.161769,
-      "ivIndex": 224.53348860000003,
-      "beta": 2.748343,
-      "liquidityRating": 4,
-      "earningsNextDate": null,
-      "daysToEarnings": null,
-      "pcr": 0.111,
-      "chainDte": 2,
-      "expiryDate": "2026-05-15",
-      "reasons": [
-        {
-          "indicator": "macd",
-          "message": "MACD bearish crossover",
-          "score": -2
-        },
-        {
-          "indicator": "momentum",
-          "message": "5d momentum -15.0%",
-          "score": -1
-        },
-        {
-          "indicator": "atr",
-          "message": "ATR 11.8% (high volatility)",
-          "score": -0.5
-        },
-        {
-          "indicator": "ivr",
-          "message": "IVR 62 🔥 (high)",
-          "score": -1
-        },
-        {
-          "indicator": "beta",
-          "message": "Beta 2.7 (high-amplitude)",
-          "score": -1
-        },
-        {
-          "indicator": "pcr",
-          "message": "PCR 0.11 (call-heavy flow)",
-          "score": 1
         }
       ]
     }
