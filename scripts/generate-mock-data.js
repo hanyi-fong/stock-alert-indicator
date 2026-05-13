@@ -9,119 +9,305 @@ if (!fs.existsSync(docsDir)) {
 
 const docsDataPath = path.join(docsDir, "data.json");
 
-const VERIFY_DAYS = 10;
-const TARGET_PROFIT_PCT = 30;
-const STOP_LOSS_PCT = 30;
+// Global defaults (can be overridden per track in the UI)
+const DEFAULT_TARGET_PCT = 30;
+const DEFAULT_STOP_LOSS_PCT = 30;
+const DEFAULT_EXPIRY_DAYS = 10;
+const MAX_TRACK_DAYS = 20;
 
-function createTrack(ticker, direction, startPrice, days, trajectory, status, maxExcursionPct, currentReturnPct) {
-    const dailyChanges = [];
-    let currentPrice = startPrice;
-
-    for (let i = 0; i < days; i++) {
-        // Create a "bumpy" random walk path
-        // We want to end up roughly at the trajectory, but with ups and downs
-        const trendPerDay = trajectory / days;
-        const volatility = 8; // +/- 4% random noise daily
-        const noise = (Math.random() * volatility) - (volatility / 2);
-        
-        // Apply change to currentPrice
-        const dailyChangePct = trendPerDay + noise;
-        currentPrice = currentPrice * (1 + (dailyChangePct / 100));
-
-        let pctChange = ((currentPrice - startPrice) / startPrice) * 100;
-        if (direction === "PUT") {
-            pctChange = -pctChange; // For put, price going down is positive return
-        }
-
-        // Backtrack business days to exclude weekends
-        let businessDaysToSubtract = days - i;
-        const date = new Date();
-        while (businessDaysToSubtract > 0) {
-            date.setDate(date.getDate() - 1);
-            if (date.getDay() !== 0 && date.getDay() !== 6) { // skip Sunday (0) and Saturday (6)
-                businessDaysToSubtract--;
-            }
-        }
-
-        dailyChanges.push({
-            day: i,
-            date: date.toISOString().split('T')[0],
-            close: parseFloat(currentPrice.toFixed(2)),
-            pctChange: parseFloat(pctChange.toFixed(2))
-        });
-    }
-
-    let startBusinessDaysToSubtract = days;
-    const detectedDate = new Date();
-    while (startBusinessDaysToSubtract > 0) {
-        detectedDate.setDate(detectedDate.getDate() - 1);
-        if (detectedDate.getDay() !== 0 && detectedDate.getDay() !== 6) {
-            startBusinessDaysToSubtract--;
-        }
-    }
-
-    return {
-        ticker,
-        direction,
-        score: 8.5,
-        isEarningsPlay: false,
-        dateDetected: detectedDate.toISOString(),
-        startPrice: parseFloat(startPrice.toFixed(2)),
-        dailyChanges,
-        maxExcursionPct: parseFloat(maxExcursionPct.toFixed(2)),
-        status,
-        daysHeld: days,
-        exitReason: status === "WIN" ? "TARGET_PROFIT" : (status === "LOSS" ? "STOP_LOSS" : null)
-    };
+/**
+ * Walk back `n` business days from today to find a past trading date.
+ */
+function businessDaysAgo(n) {
+  const date = new Date();
+  let remaining = n;
+  while (remaining > 0) {
+    date.setDate(date.getDate() - 1);
+    const day = date.getDay();
+    if (day !== 0 && day !== 6) remaining--;
+  }
+  return date;
 }
 
+/**
+ * Generate up to MAX_TRACK_DAYS of daily OHLCV data for a trade.
+ * The price follows a bumpy random walk toward `trajectory` over `totalDays`.
+ * We always collect all days; we compute triggerDay separately.
+ *
+ * @param {string} ticker
+ * @param {string} direction CALL|PUT
+ * @param {number} startPrice
+ * @param {number} daysAgo   how many business days ago the trade was detected
+ * @param {number} trajectory overall % move of the underlying over `totalDays`
+ * @param {number} totalDays  how many days of data to generate (≤ MAX_TRACK_DAYS)
+ * @param {number} targetPct  default target for computing triggerDay
+ * @param {number} stopPct    default stop for computing triggerDay
+ * @param {number} expiryDays default expiry for computing triggerDay
+ * @param {object} opts       optional volatility and extra overrides
+ */
+function buildTrack({
+  ticker,
+  direction,
+  startPrice,
+  daysAgo,
+  trajectory,
+  totalDays,
+  targetPct = DEFAULT_TARGET_PCT,
+  stopPct = DEFAULT_STOP_LOSS_PCT,
+  expiryDays = DEFAULT_EXPIRY_DAYS,
+  score = 8.5,
+  isEarningsPlay = false,
+  volatility = 8,
+}) {
+  const detectedDate = businessDaysAgo(daysAgo);
+  const trackId = `${ticker}_${direction}_${detectedDate.getTime()}`;
+
+  const dailyChanges = [];
+  let currentPrice = startPrice;
+  let maxExcursionPct = 0;
+  let status = "OPEN";
+  let exitReason = null;
+  let triggerDay = null;
+  let daysHeld = 0;
+
+  for (let i = 0; i < totalDays; i++) {
+    // Bumpy random walk toward trajectory
+    const trendPerDay = trajectory / totalDays;
+    const noise = (Math.random() * volatility) - (volatility / 2);
+    const dailyChangePct = trendPerDay + noise;
+    currentPrice = currentPrice * (1 + (dailyChangePct / 100));
+
+    // Simulate intraday high/low around close
+    const intradaySpread = Math.abs(noise) * 0.6;
+    const high = currentPrice * (1 + intradaySpread / 100);
+    const low = currentPrice * (1 - intradaySpread / 100);
+
+    // Compute performance relative to start
+    let pctChange, dayMaxPct, dayMinPct;
+    if (direction === "CALL") {
+      pctChange = ((currentPrice - startPrice) / startPrice) * 100;
+      dayMaxPct = ((high - startPrice) / startPrice) * 100;
+      dayMinPct = ((low - startPrice) / startPrice) * 100;
+    } else {
+      pctChange = ((startPrice - currentPrice) / startPrice) * 100;
+      dayMaxPct = ((startPrice - low) / startPrice) * 100;
+      dayMinPct = ((startPrice - high) / startPrice) * 100;
+    }
+
+    if (dayMaxPct > maxExcursionPct) maxExcursionPct = dayMaxPct;
+
+    // Get the business date for this day
+    const date = businessDaysAgo(daysAgo - i - 1);
+
+    dailyChanges.push({
+      day: i,
+      date: date.toISOString().split('T')[0],
+      close: parseFloat(currentPrice.toFixed(2)),
+      pctChange: parseFloat(pctChange.toFixed(2)),
+    });
+
+    // Compute trigger (first occurrence only)
+    if (triggerDay === null) {
+      const hitTarget = dayMaxPct >= targetPct;
+      const hitStop = dayMinPct <= -stopPct;
+
+      if (hitTarget && hitStop) {
+        status = "LOSS";
+        exitReason = "STOP_LOSS";
+        triggerDay = i;
+      } else if (hitTarget) {
+        status = "WIN";
+        exitReason = "TARGET_PROFIT";
+        triggerDay = i;
+      } else if (hitStop) {
+        status = "LOSS";
+        exitReason = "STOP_LOSS";
+        triggerDay = i;
+      }
+
+      if (triggerDay === null && (i + 1) >= expiryDays) {
+        status = pctChange > 0 ? "WIN" : "LOSS";
+        exitReason = "TIME_EXPIRED";
+        triggerDay = i;
+      }
+    }
+  }
+
+  daysHeld = triggerDay !== null ? triggerDay + 1 : totalDays;
+
+  return {
+    trackId,
+    ticker,
+    direction,
+    score,
+    isEarningsPlay,
+    dateDetected: detectedDate.toISOString(),
+    startPrice: parseFloat(startPrice.toFixed(2)),
+    dailyChanges,
+    maxExcursionPct: parseFloat(maxExcursionPct.toFixed(2)),
+    defaultTargetPct: targetPct,
+    defaultStopLossPct: stopPct,
+    defaultExpiryDays: expiryDays,
+    status,
+    daysHeld,
+    exitReason,
+    triggerDay,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mock Scenarios
+// ─────────────────────────────────────────────────────────────────────────────
+
 const mockTracks = [
-    // 1. A clear WIN (Call)
-    createTrack("AAPL", "CALL", 150, 4, 32, "WIN", 35.2, 32.1),
-    // 2. A clear LOSS (Call)
-    createTrack("TSLA", "CALL", 200, 3, -31, "LOSS", 2.1, -31.5),
-    // 3. An OPEN trade doing well (Call)
-    createTrack("NVDA", "CALL", 400, 6, 15, "OPEN", 18.5, 15.2),
-    // 4. An OPEN trade doing poorly (Call)
-    createTrack("AMD", "CALL", 100, 5, -10, "OPEN", 1.0, -10.4),
-    // 5. A clear WIN (Put - price dropped 32%)
-    createTrack("META", "PUT", 300, 2, -32, "WIN", 34.0, 32.1),
-    // 6. A clear LOSS (Put - price spiked 35%)
-    createTrack("NFLX", "PUT", 450, 4, 35, "LOSS", 0.0, -35.2),
-    // 7. Time Expired WIN (Call - held 10 days, ended up 12%)
-    createTrack("MSFT", "CALL", 300, 10, 12, "WIN", 15.0, 12.0),
-    // 8. Time Expired LOSS (Put - held 10 days, ended up losing 5%)
-    createTrack("AMZN", "PUT", 120, 10, 5, "LOSS", 5.0, -5.0)
+
+  // ── SCENARIO 1: AAPL CALL — Clear WIN (target hit day 4)
+  // Concurrent with Scenario 2 (same ticker, different direction)
+  buildTrack({
+    ticker: "AAPL", direction: "CALL", startPrice: 150,
+    daysAgo: 18, trajectory: 35, totalDays: 18,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 9.0,
+  }),
+
+  // ── SCENARIO 2: AAPL PUT — OPEN doing poorly (same time as CALL above)
+  // Tests: same ticker, different direction, simultaneous open trades
+  buildTrack({
+    ticker: "AAPL", direction: "PUT", startPrice: 150,
+    daysAgo: 18, trajectory: 5, totalDays: 5,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 7.5,
+  }),
+
+  // ── SCENARIO 3: TSLA CALL — Stop Loss hit day 3 (first trade)
+  buildTrack({
+    ticker: "TSLA", direction: "CALL", startPrice: 200,
+    daysAgo: 15, trajectory: -35, totalDays: 15,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 8.0,
+  }),
+
+  // ── SCENARIO 4: TSLA CALL — New entry after first trade closed (sequential)
+  // Tests: same ticker, same direction, sequential (non-overlapping) trades
+  (() => {
+    // Start 8 days ago (after Scenario 3 was already stopped out)
+    const t = buildTrack({
+      ticker: "TSLA", direction: "CALL", startPrice: 185,
+      daysAgo: 8, trajectory: 20, totalDays: 8,
+      targetPct: 30, stopPct: 30, expiryDays: 10,
+      score: 8.5,
+    });
+    // Make trackId distinct by adjusting a tiny bit in epoch (they're different daysAgo so already different)
+    return t;
+  })(),
+
+  // ── SCENARIO 5: NVDA CALL — OPEN, doing well (8 days in)
+  buildTrack({
+    ticker: "NVDA", direction: "CALL", startPrice: 400,
+    daysAgo: 8, trajectory: 18, totalDays: 8,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 9.5,
+  }),
+
+  // ── SCENARIO 6: AMD CALL — OPEN, doing poorly (5 days in)
+  buildTrack({
+    ticker: "AMD", direction: "CALL", startPrice: 100,
+    daysAgo: 5, trajectory: -12, totalDays: 5,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 7.0,
+  }),
+
+  // ── SCENARIO 7: META PUT — TIME_EXPIRED at 10 days → WIN
+  buildTrack({
+    ticker: "META", direction: "PUT", startPrice: 300,
+    daysAgo: 12, trajectory: -15, totalDays: 12,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 8.0,
+  }),
+
+  // ── SCENARIO 8: NFLX PUT — TIME_EXPIRED at 10 days → LOSS
+  buildTrack({
+    ticker: "NFLX", direction: "PUT", startPrice: 450,
+    daysAgo: 12, trajectory: 8, totalDays: 12,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 7.5,
+  }),
+
+  // ── SCENARIO 9: MSFT CALL — Just started (1 day in, OPEN)
+  buildTrack({
+    ticker: "MSFT", direction: "CALL", startPrice: 380,
+    daysAgo: 1, trajectory: 5, totalDays: 1,
+    targetPct: 30, stopPct: 30, expiryDays: 10,
+    score: 8.8,
+  }),
+
+  // ── SCENARIO 10: AMZN CALL — EDGE CASE: both target AND stop hit same day
+  // Trajectory spikes up then crashes — simulated by high volatility
+  (() => {
+    const t = buildTrack({
+      ticker: "AMZN", direction: "CALL", startPrice: 120,
+      daysAgo: 14, trajectory: 2, totalDays: 14,
+      targetPct: 10, stopPct: 10, expiryDays: 10, // tight thresholds
+      volatility: 25, // very volatile → likely hits both same day
+      score: 7.2,
+      isEarningsPlay: true,
+    });
+    return t;
+  })(),
 ];
 
-mockTracks[6].exitReason = "TIME_EXPIRED";
-mockTracks[7].exitReason = "TIME_EXPIRED";
+// ─────────────────────────────────────────────────────────────────────────────
+// Compute Stats
+// ─────────────────────────────────────────────────────────────────────────────
 
 const completed = mockTracks.filter(t => t.status !== "OPEN");
 const wins = completed.filter(t => t.status === "WIN").length;
 const losses = completed.filter(t => t.status === "LOSS").length;
-const winRate = completed.length > 0 ? ((wins / completed.length) * 100).toFixed(2) + "%" : "0.00%";
+const winRate = completed.length > 0
+  ? ((wins / completed.length) * 100).toFixed(2) + "%"
+  : "0.00%";
+
+const targetWins  = completed.filter(t => t.status === "WIN"  && t.exitReason === "TARGET_PROFIT").length;
+const stopLosses  = completed.filter(t => t.status === "LOSS" && t.exitReason === "STOP_LOSS").length;
+const expiredWins = completed.filter(t => t.status === "WIN"  && t.exitReason === "TIME_EXPIRED").length;
+const expiredLoss = completed.filter(t => t.status === "LOSS" && t.exitReason === "TIME_EXPIRED").length;
 
 const payload = {
-    updatedAt: new Date().toISOString(),
-    verifyDays: VERIFY_DAYS,
-    targetProfitPct: TARGET_PROFIT_PCT,
-    stopLossPct: STOP_LOSS_PCT,
-    stats: {
-      total: mockTracks.length,
-      completed: completed.length,
-      open: mockTracks.length - completed.length,
-      wins,
-      losses,
-      winRate
-    },
-    tracks: mockTracks
+  updatedAt: new Date().toISOString(),
+  maxTrackDays: MAX_TRACK_DAYS,
+  defaultVerifyDays: DEFAULT_EXPIRY_DAYS,
+  defaultTargetPct: DEFAULT_TARGET_PCT,
+  defaultStopLossPct: DEFAULT_STOP_LOSS_PCT,
+  stats: {
+    total: mockTracks.length,
+    completed: completed.length,
+    open: mockTracks.filter(t => t.status === "OPEN").length,
+    wins,
+    losses,
+    winRate,
+    targetWins,
+    stopLosses,
+    expiredWins,
+    expiredLoss,
+  },
+  tracks: mockTracks,
 };
 
 fs.writeFileSync(docsDataPath, JSON.stringify(payload, null, 2), "utf8");
+
 console.log(`✅ Mock UI data generated at ${docsDataPath}`);
+console.log(`\n📊 Mock Scenarios Summary:`);
+console.log(`   Total tracks:   ${mockTracks.length}`);
+console.log(`   Open:           ${payload.stats.open}`);
+console.log(`   Completed:      ${payload.stats.completed}`);
+console.log(`   Wins:           ${wins} | Losses: ${losses} | Win Rate: ${winRate}`);
+console.log(`\n   Concurrent same-ticker: AAPL CALL + AAPL PUT (Scenarios 1+2)`);
+console.log(`   Sequential same-ticker: TSLA CALL x2 (Scenarios 3+4)`);
+console.log(`   Edge case (tight thresholds): AMZN CALL (Scenario 10)`);
+console.log(`\n   All tracks have up to ${MAX_TRACK_DAYS} days of raw price data.`);
+
 if (isLocalTest) {
-    console.log(`   (Saved to local/ since you are running locally)`);
+  console.log(`\n   (Saved to local/ for local testing. Open docs/index.html via a local server.)`);
 } else {
-    console.log(`   You can now open docs/index.html in your browser to view the dashboard.`);
+  console.log(`\n   (Saved to docs/ for GitHub Pages.)`);
 }
