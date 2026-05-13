@@ -19,14 +19,15 @@ function detectIndicator(message) {
   if (m.startsWith("rsi"))                             return "rsi";
   if (m.startsWith("bb"))                              return "bb";
   if (m.startsWith("macd"))                            return "macd";
+  if (m.startsWith("ivr"))                             return "ivr";  // must precede overextended check
   if (m.includes("overextended") || m.startsWith("5d momentum")) return "momentum";
   if (m.startsWith("atr"))                             return "atr";
-  if (m.startsWith("ivr"))                             return "ivr";
   if (m.startsWith("beta"))                            return "beta";
   if (m.includes("liquidity"))                         return "liquidity";
   if (m.startsWith("pcr"))                             return "pcr";
   if (m.includes("earnings"))                          return "earnings";
   if (m.startsWith("volume"))                          return "volume";
+  if (m.includes("conflicting signals"))               return "coherence";
   return null;
 }
 

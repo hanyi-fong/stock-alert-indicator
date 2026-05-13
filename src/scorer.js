@@ -63,6 +63,27 @@ export function compositeScore(tech, metrics, chain) {
     }
   }
 
+  // ─── Signal Coherence Check ───────────────────────────────────────────────
+  // Flags when trend-following momentum and mean-reversion RSI point in opposite
+  // directions — a diagnostic warning, not a score change.
+  // Example: stock up 10% in 5 days (trend = bullish) but RSI >= 70 (mean-rev = bearish)
+  // In a strong trend this is normal; in a range it signals exhaustion.
+  // We log it so the user knows the signal is mixed-conviction.
+  if (tech.momentum5dPct !== undefined && tech.momentum5dPct !== null && tech.rsi !== null) {
+    const momentumBullish = tech.momentum5dPct >= 4;
+    const momentumBearish = tech.momentum5dPct <= -4;
+    const rsiBearish      = tech.rsi >= 70;   // overbought → mean-rev PUT
+    const rsiBullish      = tech.rsi <= 30;   // oversold   → mean-rev CALL
+
+    if (momentumBullish && rsiBearish) {
+      // Trend says UP, RSI says overbought/reversal risk
+      reasons.push(`⚠️ Conflicting signals: momentum bullish (+${tech.momentum5dPct.toFixed(1)}%) but RSI overbought (${tech.rsi}) — mixed conviction`);
+    } else if (momentumBearish && rsiBullish) {
+      // Trend says DOWN, RSI says oversold/bounce risk
+      reasons.push(`⚠️ Conflicting signals: momentum bearish (${tech.momentum5dPct.toFixed(1)}%) but RSI oversold (${tech.rsi}) — mixed conviction`);
+    }
+  }
+
   // ─── ATR% bonus (inherently volatile stock) ───────────────────────────────
   if (tech.atrPct !== undefined && tech.atrPct !== null && tech.atrPct >= 4) {
     // Add to magnitude in whichever direction we're already going
@@ -186,14 +207,19 @@ export function compositeScore(tech, metrics, chain) {
     isEarningsPlay,
     pcrSignal,
     // Pass-through from tech
-    rsi:          tech.rsi,
-    macd:         tech.macd,
-    dayChangePct: tech.dayChangePct,
-    volumeRatio:  tech.volumeRatio,
-    volumeSpike:  tech.volumeSpike,
-    lastClose:    tech.lastClose,
-    momentum5dPct: tech.momentum5dPct,
-    atrPct:       tech.atrPct,
+    rsi:              tech.rsi,
+    macd:             tech.macd,
+    dayChangePct:     tech.dayChangePct,
+    volumeRatio:      tech.volumeRatio,
+    volumeSpike:      tech.volumeSpike,
+    lastClose:        tech.lastClose,
+    momentum5dPct:    tech.momentum5dPct,
+    atrPct:           tech.atrPct,
+    // Trend-regime fields (ADX + RSI divergence)
+    adx:              tech.adx             ?? null,
+    adxRegime:        tech.adxRegime       ?? 'RANGING',
+    rsiDivergence:    tech.rsiDivergence   ?? false,
+    rsiDivergenceType: tech.rsiDivergenceType ?? null,
     // Pass-through from metrics
     ivr:              metrics?.ivr    ?? null,
     ivIndex:          metrics?.ivIndex ?? null,

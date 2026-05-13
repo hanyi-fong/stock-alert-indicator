@@ -101,8 +101,8 @@ export async function fetchOptionChainPCR(symbol, lastClose) {
       const price = parseFloat(strike["strike-price"]);
       if (!nearATMPrices.has(price)) continue;
 
-      const callSym = strike["call-streamer-symbol"] ?? strike.call;
-      const putSym  = strike["put-streamer-symbol"]  ?? strike.put;
+      const callSym = strike.call;
+      const putSym  = strike.put;
       if (callSym) callSymbols.push(callSym);
       if (putSym)  putSymbols.push(putSym);
     }
@@ -112,7 +112,7 @@ export async function fetchOptionChainPCR(symbol, lastClose) {
     // ── Step 4: Fetch market data for those contracts ──────────────────
     const allOptSymbols = [...callSymbols, ...putSymbols];
     const encoded = allOptSymbols.map(encodeURIComponent).join(",");
-    const quoteRes = await tastyFetch(`/market-data/by-type?equity-option=${encoded}`);
+    const quoteRes = await tastyFetch(`/market-data?symbols=${encoded}`);
 
     if (!quoteRes.ok) {
       console.warn(`  ⚠️  Quote fetch failed for ${symbol} options: ${quoteRes.status}`);

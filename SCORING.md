@@ -43,18 +43,25 @@ The **MACD (Moving Average Convergence Divergence)** detects momentum shifts.
 
 ---
 
-### 1.2 RSI (Relative Strength Index) `up to ±3 pts`
+### 1.2 RSI (Relative Strength Index) `up to ±3 pts (ADX-conditional)`
 
 The **RSI** measures how overbought or oversold a stock is on a 0–100 scale. Uses 14-day period with Wilder's smoothing.
 
-| RSI Value | Condition | Points |
-|---|---|---|
-| ≤ 25 | Extreme oversold | **+3** (CALL) |
-| ≤ 30 | Oversold | **+2** (CALL) |
-| ≥ 75 | Extreme overbought | **−3** (PUT) |
-| ≥ 70 | Overbought | **−2** (PUT) |
+> [!IMPORTANT]
+> **RSI is a mean-reversion indicator. It only works reliably in ranging/choppy markets.** In strong trends, overbought simply means "strong momentum" — not an imminent reversal. The algorithm now adjusts RSI weight based on the ADX Trend Regime (see §1.6).
 
-> Extreme RSI + MACD crossover together is the most reliable reversal signal.
+#### RSI Points — Conditional on ADX Regime
+
+| RSI Value | Condition | RANGING (ADX<20) | TRENDING (ADX 20–40) | STRONG TREND (ADX>40) |
+|---|---|---|---|---|
+| ≤ 25 | Extreme oversold | **+3** | **+1** (or +3.5 with divergence) | **+1** ⚠️ discounted |
+| ≤ 30 | Oversold | **+2** | **+1** (or +2.5 with divergence) | **+1** ⚠️ discounted |
+| ≥ 75 | Extreme overbought | **−3** | **−1** (or −3.5 with divergence) | **−1** ⚠️ discounted |
+| ≥ 70 | Overbought | **−2** | **−1** (or −2.5 with divergence) | **−1** ⚠️ discounted |
+
+> In **RANGING** markets: full credit — mean-reversion is reliable.
+> In **TRENDING** markets: capped at ±1 unless RSI divergence is confirmed (see §1.6).
+> In **STRONG TREND** markets: halved to ±1 regardless — overbought in a bull run ≠ reversal.
 
 #### RSI + MACD Correlation Cap
 
@@ -98,7 +105,7 @@ Confirms institutional activity — smart money is moving.
 
 ---
 
-### 1.5 5-Day Momentum `±1 pt`
+### 1.5 5-Day Momentum `±2 pts`
 
 **Trend strength** over the last 5 trading days (price % change from 5 days ago to today).
 
@@ -110,6 +117,51 @@ Confirms institutional activity — smart money is moving.
 | 5-day momentum -4% to -14.9% | **−1** (PUT — strong downtrend) |
 
 > A stock running up > 15% in 5 days is highly susceptible to a "sell the news" pullback. The algorithm penalizes extreme momentum to prevent buying the absolute top (or shorting the absolute bottom).
+
+---
+
+### 1.6 Trend Regime Modifier — ADX `contextual modifier`
+
+The **ADX (Average Directional Index)** measures **trend strength**, not direction. It is the definitive answer to: *"Is this stock trending or ranging right now?"*
+
+- Settings: 14-period ADX
+- Values range 0–100: higher = stronger trend
+
+| ADX Value | Regime | Market State | Effect on RSI/BB |
+|---|---|---|---|
+| < 20 | **RANGING** | Choppy, mean-reversion reliable | RSI/BB full weight ✅ |
+| 20–40 | **TRENDING** | Moderate trend in play | RSI capped at ±1 unless divergence confirmed ⚠️ |
+| > 40 | **STRONG TREND** | Sustained directional move | RSI halved to ±1; BB suppressed to 0 🚫 |
+
+> **Why this matters:** In a bull trend (ADX > 40), RSI staying above 70 just means the stock has strong momentum — it does not predict a reversal. Suppressing mean-reversion signals in this regime prevents the algorithm from shorting (PUT) a strong uptrend simply because it's "overbought."
+
+#### RSI Divergence — Quality Gate for TRENDING Markets
+
+In a **TRENDING** (ADX 20–40) market, RSI alone is unreliable. But **RSI Divergence** is a much stronger signal:
+
+| Divergence Type | Condition | Meaning |
+|---|---|---|
+| **Bullish Divergence** | Price making lower lows, RSI making higher lows (at RSI ≤ 40) | Selling pressure fading — CALL credible |
+| **Bearish Divergence** | Price making higher highs, RSI making lower highs (at RSI ≥ 60) | Buying pressure fading — PUT credible |
+
+Detection method: 5-bar slope comparison (price direction vs RSI direction) with a minimum 3-point RSI slope threshold to filter noise.
+
+**Effect when divergence is confirmed in a TRENDING market:**
+- RSI earns **full original points + 0.5 bonus** (e.g. RSI ≤ 30 + bullish divergence = **+2.5** instead of +1)
+- Reason label: `RSI oversold + bullish divergence confirmed (+2.5)`
+
+---
+
+### 1.7 Signal Coherence Flag `informational only — no score change`
+
+When **trend-following** (momentum) and **mean-reversion** (RSI) signals point in **opposite directions**, a warning is added to the reasons list:
+
+| Conflict Scenario | Warning Added |
+|---|---|
+| 5d momentum +4%+ (bullish) AND RSI ≥ 70 (overbought) | `⚠️ Conflicting signals: momentum bullish but RSI overbought — mixed conviction` |
+| 5d momentum −4%+ (bearish) AND RSI ≤ 30 (oversold) | `⚠️ Conflicting signals: momentum bearish but RSI oversold — mixed conviction` |
+
+> This flag does **not** change the score — it is a transparency signal. In a STRONG TREND (ADX > 40), this conflict is expected and normal. In a RANGING market, it signals the alert has lower conviction and warrants extra caution before sizing a position.
 
 ---
 
