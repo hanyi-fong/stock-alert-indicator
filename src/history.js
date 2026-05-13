@@ -10,6 +10,27 @@ if (!fs.existsSync(HISTORY_DIR)) {
 }
 
 /**
+ * Detect the indicator key from a reason message string.
+ * Maps human-readable reason text back to the breakdown key.
+ */
+function detectIndicator(message) {
+  const m = message.toLowerCase();
+  if (m.startsWith("rsi+macd"))                       return "correlationCap";
+  if (m.startsWith("rsi"))                             return "rsi";
+  if (m.startsWith("bb"))                              return "bb";
+  if (m.startsWith("macd"))                            return "macd";
+  if (m.includes("overextended") || m.startsWith("5d momentum")) return "momentum";
+  if (m.startsWith("atr"))                             return "atr";
+  if (m.startsWith("ivr"))                             return "ivr";
+  if (m.startsWith("beta"))                            return "beta";
+  if (m.includes("liquidity"))                         return "liquidity";
+  if (m.startsWith("pcr"))                             return "pcr";
+  if (m.includes("earnings"))                          return "earnings";
+  if (m.startsWith("volume"))                          return "volume";
+  return null;
+}
+
+/**
  * Get the current date in YYYY-MM-DD format (Eastern Time).
  */
 function getDateString() {
@@ -31,12 +52,14 @@ export function saveScanResult(signals, session) {
   let filePath;
 
   if (session === "manual") {
-    const timestamp = Date.now();
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const datetimeStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
     const manualDir = path.join(HISTORY_DIR, "manual");
     if (!fs.existsSync(manualDir)) {
       fs.mkdirSync(manualDir, { recursive: true });
     }
-    filePath = path.join(manualDir, `${timestamp}.json`);
+    filePath = path.join(manualDir, `${datetimeStr}.json`);
   } else {
     const filename = session.startsWith("manual") ? `${session}.json` : `${dateStr}-${session}.json`;
     filePath = path.join(HISTORY_DIR, filename);
@@ -45,7 +68,24 @@ export function saveScanResult(signals, session) {
   const payload = {
     timestamp: new Date().toISOString(),
     session,
-    signals,
+    signals: signals.map(s => {
+      // Merge breakdown into reasons: each reason gets an indicator key and numeric score.
+      // The breakdown object is dropped — reasons is now the single source of truth.
+      const enrichedReasons = (s.reasons || []).map(r => {
+        const match = r.match(/^(.*?) \(([+-]?[\d.]+)\)$/);
+        const message = match ? match[1].trim() : r;
+        const score   = match ? parseFloat(match[2]) : undefined;
+        const indicator = detectIndicator(message);
+
+        const entry = { indicator, message };
+        if (score !== undefined) entry.score = score;
+        return entry;
+      });
+
+      // Destructure to drop breakdown from the saved payload
+      const { breakdown, reasons, ...rest } = s; // eslint-disable-line no-unused-vars
+      return { ...rest, reasons: enrichedReasons };
+    }),
   };
 
   fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), "utf8");
