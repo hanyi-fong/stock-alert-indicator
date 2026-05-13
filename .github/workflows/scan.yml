@@ -21,6 +21,16 @@ on:
         type: boolean
         required: false
         default: false
+      save_history:
+        description: 'Save history to repository'
+        type: boolean
+        required: false
+        default: true
+      watchlist:
+        description: 'Comma separated WATCHLIST'
+        type: string
+        required: false
+        default: ''
 
 jobs:
   scan:
@@ -61,7 +71,7 @@ jobs:
           # Option B: Comma-separated list of ticker symbols
           #   WATCHLIST: "NVDA,TSLA,AAPL,AMD"
           TASTYTRADE_WATCHLISTS: ${{ vars.TASTYTRADE_WATCHLISTS }}
-          WATCHLIST: ${{ vars.WATCHLIST }}
+          WATCHLIST: ${{ inputs.watchlist != '' && inputs.watchlist || vars.WATCHLIST }}
         run: |
           HOUR=$(date -u +%H)
           if [ "$HOUR" -eq "13" ]; then
@@ -71,6 +81,7 @@ jobs:
           fi
 
       - name: Commit history files
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.save_history == true }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
