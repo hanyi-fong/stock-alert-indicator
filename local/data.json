@@ -1,0 +1,392 @@
+{
+  "updatedAt": "2026-05-13T08:06:50.667Z",
+  "verifyDays": 10,
+  "targetProfitPct": 30,
+  "stopLossPct": 30,
+  "stats": {
+    "total": 8,
+    "completed": 6,
+    "open": 2,
+    "wins": 3,
+    "losses": 3,
+    "winRate": "50.00%"
+  },
+  "tracks": [
+    {
+      "ticker": "AAPL",
+      "direction": "CALL",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-07T08:06:50.667Z",
+      "startPrice": 150,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-07",
+          "close": 162,
+          "pctChange": 8
+        },
+        {
+          "day": 1,
+          "date": "2026-05-08",
+          "close": 174,
+          "pctChange": 16
+        },
+        {
+          "day": 2,
+          "date": "2026-05-11",
+          "close": 186,
+          "pctChange": 24
+        },
+        {
+          "day": 3,
+          "date": "2026-05-12",
+          "close": 198,
+          "pctChange": 32
+        }
+      ],
+      "maxExcursionPct": 35.2,
+      "status": "WIN",
+      "daysHeld": 4,
+      "exitReason": "TARGET_PROFIT"
+    },
+    {
+      "ticker": "TSLA",
+      "direction": "CALL",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-08T08:06:50.667Z",
+      "startPrice": 200,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-08",
+          "close": 179.33,
+          "pctChange": -10.33
+        },
+        {
+          "day": 1,
+          "date": "2026-05-11",
+          "close": 158.67,
+          "pctChange": -20.67
+        },
+        {
+          "day": 2,
+          "date": "2026-05-12",
+          "close": 138,
+          "pctChange": -31
+        }
+      ],
+      "maxExcursionPct": 2.1,
+      "status": "LOSS",
+      "daysHeld": 3,
+      "exitReason": "STOP_LOSS"
+    },
+    {
+      "ticker": "NVDA",
+      "direction": "CALL",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-05T08:06:50.667Z",
+      "startPrice": 400,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-05",
+          "close": 410,
+          "pctChange": 2.5
+        },
+        {
+          "day": 1,
+          "date": "2026-05-06",
+          "close": 420,
+          "pctChange": 5
+        },
+        {
+          "day": 2,
+          "date": "2026-05-07",
+          "close": 430,
+          "pctChange": 7.5
+        },
+        {
+          "day": 3,
+          "date": "2026-05-08",
+          "close": 440,
+          "pctChange": 10
+        },
+        {
+          "day": 4,
+          "date": "2026-05-11",
+          "close": 450,
+          "pctChange": 12.5
+        },
+        {
+          "day": 5,
+          "date": "2026-05-12",
+          "close": 460,
+          "pctChange": 15
+        }
+      ],
+      "maxExcursionPct": 18.5,
+      "status": "OPEN",
+      "daysHeld": 6,
+      "exitReason": null
+    },
+    {
+      "ticker": "AMD",
+      "direction": "CALL",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-06T08:06:50.667Z",
+      "startPrice": 100,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-06",
+          "close": 98,
+          "pctChange": -2
+        },
+        {
+          "day": 1,
+          "date": "2026-05-07",
+          "close": 96,
+          "pctChange": -4
+        },
+        {
+          "day": 2,
+          "date": "2026-05-08",
+          "close": 94,
+          "pctChange": -6
+        },
+        {
+          "day": 3,
+          "date": "2026-05-11",
+          "close": 92,
+          "pctChange": -8
+        },
+        {
+          "day": 4,
+          "date": "2026-05-12",
+          "close": 90,
+          "pctChange": -10
+        }
+      ],
+      "maxExcursionPct": 1,
+      "status": "OPEN",
+      "daysHeld": 5,
+      "exitReason": null
+    },
+    {
+      "ticker": "META",
+      "direction": "PUT",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-11T08:06:50.667Z",
+      "startPrice": 300,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-11",
+          "close": 252,
+          "pctChange": 16
+        },
+        {
+          "day": 1,
+          "date": "2026-05-12",
+          "close": 204,
+          "pctChange": 32
+        }
+      ],
+      "maxExcursionPct": 34,
+      "status": "WIN",
+      "daysHeld": 2,
+      "exitReason": "TARGET_PROFIT"
+    },
+    {
+      "ticker": "NFLX",
+      "direction": "PUT",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-07T08:06:50.667Z",
+      "startPrice": 450,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-07",
+          "close": 489.37,
+          "pctChange": -8.75
+        },
+        {
+          "day": 1,
+          "date": "2026-05-08",
+          "close": 528.75,
+          "pctChange": -17.5
+        },
+        {
+          "day": 2,
+          "date": "2026-05-11",
+          "close": 568.13,
+          "pctChange": -26.25
+        },
+        {
+          "day": 3,
+          "date": "2026-05-12",
+          "close": 607.5,
+          "pctChange": -35
+        }
+      ],
+      "maxExcursionPct": 0,
+      "status": "LOSS",
+      "daysHeld": 4,
+      "exitReason": "STOP_LOSS"
+    },
+    {
+      "ticker": "MSFT",
+      "direction": "CALL",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-04-29T08:06:50.667Z",
+      "startPrice": 300,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-04-29",
+          "close": 303.6,
+          "pctChange": 1.2
+        },
+        {
+          "day": 1,
+          "date": "2026-04-30",
+          "close": 307.2,
+          "pctChange": 2.4
+        },
+        {
+          "day": 2,
+          "date": "2026-05-01",
+          "close": 310.8,
+          "pctChange": 3.6
+        },
+        {
+          "day": 3,
+          "date": "2026-05-04",
+          "close": 314.4,
+          "pctChange": 4.8
+        },
+        {
+          "day": 4,
+          "date": "2026-05-05",
+          "close": 318,
+          "pctChange": 6
+        },
+        {
+          "day": 5,
+          "date": "2026-05-06",
+          "close": 321.6,
+          "pctChange": 7.2
+        },
+        {
+          "day": 6,
+          "date": "2026-05-07",
+          "close": 325.2,
+          "pctChange": 8.4
+        },
+        {
+          "day": 7,
+          "date": "2026-05-08",
+          "close": 328.8,
+          "pctChange": 9.6
+        },
+        {
+          "day": 8,
+          "date": "2026-05-11",
+          "close": 332.4,
+          "pctChange": 10.8
+        },
+        {
+          "day": 9,
+          "date": "2026-05-12",
+          "close": 336,
+          "pctChange": 12
+        }
+      ],
+      "maxExcursionPct": 15,
+      "status": "WIN",
+      "daysHeld": 10,
+      "exitReason": "TIME_EXPIRED"
+    },
+    {
+      "ticker": "AMZN",
+      "direction": "PUT",
+      "score": 8.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-04-29T08:06:50.667Z",
+      "startPrice": 120,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-04-29",
+          "close": 120.6,
+          "pctChange": -0.5
+        },
+        {
+          "day": 1,
+          "date": "2026-04-30",
+          "close": 121.2,
+          "pctChange": -1
+        },
+        {
+          "day": 2,
+          "date": "2026-05-01",
+          "close": 121.8,
+          "pctChange": -1.5
+        },
+        {
+          "day": 3,
+          "date": "2026-05-04",
+          "close": 122.4,
+          "pctChange": -2
+        },
+        {
+          "day": 4,
+          "date": "2026-05-05",
+          "close": 123,
+          "pctChange": -2.5
+        },
+        {
+          "day": 5,
+          "date": "2026-05-06",
+          "close": 123.6,
+          "pctChange": -3
+        },
+        {
+          "day": 6,
+          "date": "2026-05-07",
+          "close": 124.2,
+          "pctChange": -3.5
+        },
+        {
+          "day": 7,
+          "date": "2026-05-08",
+          "close": 124.8,
+          "pctChange": -4
+        },
+        {
+          "day": 8,
+          "date": "2026-05-11",
+          "close": 125.4,
+          "pctChange": -4.5
+        },
+        {
+          "day": 9,
+          "date": "2026-05-12",
+          "close": 126,
+          "pctChange": -5
+        }
+      ],
+      "maxExcursionPct": 5,
+      "status": "LOSS",
+      "daysHeld": 10,
+      "exitReason": "TIME_EXPIRED"
+    }
+  ]
+}
