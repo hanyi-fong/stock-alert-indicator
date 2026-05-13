@@ -7,8 +7,9 @@ import { enrichWithOptionChain }     from "./tasty/option-chain.js";
 import { rankCandidates }            from "./scorer.js";
 import { saveScanResult }            from "./history.js";
 
-const DRY_RUN   = process.argv.includes("--dry-run");
-const FULL_SCAN = process.argv.includes("--full-scan");
+const DRY_RUN      = process.argv.includes("--dry-run");
+const FULL_SCAN    = process.argv.includes("--full-scan");
+const SKIP_HISTORY = process.argv.includes("--skip-history");
 
 // Session parsing: e.g. --session morning, --session afternoon
 let session = "manual";
@@ -254,7 +255,12 @@ async function main() {
   }
 
   await sendGoogleChatAlert(topSignals, runTime);
-  saveScanResult(topSignals, session);
+  
+  if (!SKIP_HISTORY) {
+    saveScanResult(topSignals, session);
+  } else {
+    console.log("  ⚠️  [SKIP HISTORY] — signals not saved to local history.");
+  }
 
 }
 

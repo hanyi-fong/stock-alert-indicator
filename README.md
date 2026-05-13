@@ -55,6 +55,9 @@ npm run scan:full
 
 # 4. Dry run (only prints to terminal, no Google Chat alerts)
 npm run test
+
+# 5. Ad-hoc scan (sends alerts, but SKIPS saving history)
+node --env-file=.env src/index.js --skip-history
 ```
 
 ### Performance Verification & Lifecycle Tracking
