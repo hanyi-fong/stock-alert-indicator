@@ -167,12 +167,14 @@ Go to your GitHub repo → **Settings** → **Secrets and variables** → **Acti
 - `WATCHLIST`: Overrides the scan universe with a specific, comma-separated list of symbols (e.g., `AAPL,MSFT`).
 - `TASTYTRADE_WATCHLISTS`: Comma-separated list of TastyTrade public watchlists to use (set to `ALL` to scan all 2400+ symbols).
 
-The scanner will now run automatically at **9:35 AM and 3:45 PM ET, Monday–Friday**.
+The scanner will now run automatically at **9:35 AM and 3:30 PM ET, Monday–Friday**.
 
 ## Manual GitHub Action Run
 You can manually trigger the workflow anytime:
 Go to your GitHub repo → **Actions** → **Stock Scanner** → **Run workflow**
-- You can check the **Run Full Scan** box to trigger a `--full-scan` bypass.
+- **Run Full Scan**: Bypasses the Fast Scan filter (Liquidity/IVR check).
+- **Save history to repository**: Set to `true` to record signals in the `/history` folder (triggers verification tracking). Set to `false` (default) for quick ad-hoc alerts.
+- **Comma separated WATCHLIST**: Temporarily override the scan universe with specific symbols.
 
 ## Disclaimer
 This tool is for educational purposes only. Options trading involves significant risk and can result in the loss of capital. Always do your own research before placing any trade.

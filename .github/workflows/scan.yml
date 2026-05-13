@@ -76,8 +76,12 @@ jobs:
           TASTYTRADE_WATCHLISTS: ${{ vars.TASTYTRADE_WATCHLISTS }}
           WATCHLIST: ${{ inputs.watchlist != '' && inputs.watchlist || vars.WATCHLIST }}
         run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.full_scan }}" == "true" ]; then ARGS="$ARGS --full-scan"; fi
+          if [ "${{ github.event.inputs.save_history }}" == "false" ] && [ "${{ github.event_name }}" == "workflow_dispatch" ]; then ARGS="$ARGS --skip-history"; fi
+          
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            npm run scan -- --session manual
+            npm run scan -- --session manual $ARGS
           else
             HOUR=$(date -u +%H)
             if [ "$HOUR" -eq "13" ]; then
