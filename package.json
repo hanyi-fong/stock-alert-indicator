@@ -6,6 +6,10 @@
   "type": "module",
   "scripts": {
     "scan": "node --env-file=.env src/index.js",
+    "scan:morning": "node --env-file=.env src/index.js --session morning",
+    "scan:afternoon": "node --env-file=.env src/index.js --session afternoon",
+    "scan:manual-record": "node --env-file=.env src/index.js --record-manual",
+    "scan:manual-verify": "node --env-file=.env src/index.js --verify-manual",
     "scan:full": "node --env-file=.env src/index.js --full-scan",
     "test": "node --env-file=.env src/index.js --dry-run"
   },

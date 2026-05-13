@@ -133,3 +133,52 @@ export async function sendHeartbeat() {
     body:    JSON.stringify({ text: "✅ Stock scanner is alive and running." }),
   });
 }
+
+/**
+ * Send verification results to Google Chat.
+ */
+export async function sendVerificationAlert(verificationData, runTime) {
+  if (!WEBHOOK) return;
+  if (!verificationData || verificationData.length === 0) return;
+
+  const divider = "─────────────────────────────";
+  
+  const profitableCount = verificationData.filter(v => v.isProfitable).length;
+  const winRate = ((profitableCount / verificationData.length) * 100).toFixed(0);
+
+  const header = [
+    `📊 *Intraday Verification Report* — ${runTime}`,
+    `${verificationData.length} signal(s) verified | Win Rate: ${winRate}% (${profitableCount}/${verificationData.length})`,
+    "_Performance measured from morning alert price to afternoon close_",
+  ].join("\n");
+
+  const blocks = verificationData.map(v => {
+    const emoji = v.isProfitable ? "🏆" : "📉";
+    const dirEmoji = v.direction === "CALL" ? "🟢" : "🔴";
+    const returnStr = `${v.currentReturnPct > 0 ? "+" : ""}${v.currentReturnPct}%`;
+    const excursionStr = `${v.maxFavorablePct > 0 ? "+" : ""}${v.maxFavorablePct}%`;
+    
+    return [
+      `${emoji} ${dirEmoji} *${v.ticker}* (${v.direction})`,
+      `   Entry Price : $${v.entryPrice.toFixed(2)}`,
+      `   Current     : $${v.currentPrice.toFixed(2)}  *(Return: ${returnStr})*`,
+      `   Max Excursion: ${excursionStr}  (High: $${v.intradayHigh?.toFixed(2) || "n/a"}, Low: $${v.intradayLow?.toFixed(2) || "n/a"})`,
+      divider
+    ].join("\n");
+  });
+
+  const text = [header, divider, ...blocks].join("\n");
+
+  const res = await fetch(WEBHOOK, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ text }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.warn(`⚠️ Google Chat verification webhook failed: ${res.status} — ${body}`);
+  } else {
+    console.log(`📨 Verification alert sent to Google Chat`);
+  }
+}

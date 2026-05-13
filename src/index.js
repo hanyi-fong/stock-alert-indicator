@@ -1,13 +1,26 @@
 import { CONFIG }                    from "./watchlist.js";
 import { calcIndicators }            from "./indicators.js";
-import { sendGoogleChatAlert }       from "./notifier.js";
+import { sendGoogleChatAlert, sendVerificationAlert } from "./notifier.js";
 import { buildUniverse }             from "./tasty/watchlists.js";
 import { fetchMarketMetrics }        from "./tasty/market-metrics.js";
 import { enrichWithOptionChain }     from "./tasty/option-chain.js";
 import { rankCandidates }            from "./scorer.js";
+import { saveScanResult, loadPreviousResult, saveVerificationResult } from "./history.js";
+import { verifySignals }             from "./verifier.js";
 
 const DRY_RUN   = process.argv.includes("--dry-run");
 const FULL_SCAN = process.argv.includes("--full-scan");
+
+// Session parsing: e.g. --session morning, --session afternoon
+let session = "manual";
+const sessionIdx = process.argv.indexOf("--session");
+if (sessionIdx > -1 && process.argv.length > sessionIdx + 1) {
+  session = process.argv[sessionIdx + 1];
+}
+if (process.argv.includes("--record-manual")) session = "manual-record";
+
+const IS_VERIFICATION_RUN = session === "afternoon" || process.argv.includes("--verify-manual");
+
 const TOP_N     = 10;    // final signals to alert
 const OPT_CHAIN_LIMIT = 25; // max candidates enriched with option chain
 
@@ -230,13 +243,31 @@ async function main() {
     console.log("  No strong signals found today.");
   }
 
-  // ── STEP 8: Send alert ───────────────────────────────────────────────────
+  // ── STEP 8: Send alert and save history ──────────────────────────────────
   if (DRY_RUN) {
-    console.log("\n[DRY RUN] — webhook not called");
+    console.log("\n[DRY RUN] — webhook not called, history not saved");
     return;
   }
 
   await sendGoogleChatAlert(topSignals, runTime);
+  saveScanResult(topSignals, session);
+
+  // ── STEP 9: Intraday Verification (Afternoon only) ───────────────────────
+  if (IS_VERIFICATION_RUN) {
+    console.log("\n============================================================");
+    console.log("🔍  STEP 9: Running verification on previous scan...");
+    
+    const prevSession = session === "afternoon" ? "morning" : "manual-record";
+    const prevSignals = loadPreviousResult(prevSession);
+    
+    if (prevSignals && prevSignals.length > 0) {
+      const verificationData = await verifySignals(prevSignals);
+      saveVerificationResult(verificationData, session);
+      await sendVerificationAlert(verificationData, runTime);
+    } else {
+      console.log(`  ℹ️  No signals from ${prevSession} to verify.`);
+    }
+  }
 }
 
 main().catch(err => {

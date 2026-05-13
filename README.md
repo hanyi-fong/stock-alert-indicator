@@ -39,21 +39,41 @@ TASTYTRADE_REFRESH_TOKEN="your_tastytrade_refresh_token"
 # TASTYTRADE_WATCHLISTS="Tasty,Liquid,High IV"
 ```
 
-### 3. Run Locally (Dry Run)
-To run a test scan locally without sending an actual alert to Google Chat, use the `--dry-run` flag. Node 20's built-in `--env-file` flag is used to load your `.env`:
+### Running Locally
 
 ```bash
-npm test
-# OR
-node --env-file=.env src/index.js --dry-run
-```
+# 1. Install dependencies
+npm install
 
-To run a real scan and send the alert:
-```bash
+# 2. Run a default scan (Fast Scan)
 npm run scan
-# OR
-node --env-file=.env src/index.js
+
+# 3. Run a comprehensive scan (Full Market)
+npm run scan:full
+
+# 4. Dry run (no alerts sent)
+npm run test
 ```
+
+### Verification & History Tracking
+
+The scanner includes an automated engine to record predictions and verify intraday performance:
+
+```bash
+# 1. Run a morning scan and record results
+npm run scan:morning
+
+# 2. Run an afternoon scan, record results, and VERIFY the morning signals
+npm run scan:afternoon
+
+# 3. Manually record and verify a custom scan
+npm run scan:manual-record
+npm run scan:manual-verify
+```
+
+*   **Morning Scan (9:35 AM):** Generates `history/YYYY-MM-DD-morning.json`.
+*   **Afternoon Scan (3:30 PM):** Generates `history/YYYY-MM-DD-afternoon.json`. It also reads the morning file, fetches intraday data (highs/lows/current price) to calculate the max favorable excursion, and saves `history/YYYY-MM-DD-verification.json`.
+*   **GitHub Actions:** Automatically runs morning and afternoon scans, sends a verification report to Google Chat at 3:30 PM, and commits the JSON files back to this repository for historical tracking.
 
 ### 4. Fast Scan vs Full Scan
 By default, the scanner runs in **Fast Scan** mode, which filters out low-potential stocks (poor liquidity or low IVR) before the technical analysis phase. This significantly improves performance and avoids API rate limits.
