@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-05-13T05:55:18.121Z",
+  "session": "manual",
+  "signals": [
+    {
+      "ticker": "TSLA",
+      "watchlists": [
+        "WATCHLIST override"
+      ],
+      "score": 1.5,
+      "breakdown": {
+        "momentum": "+1",
+        "beta": "+0.5"
+      },
+      "direction": "WATCH",
+      "reasons": [
+        "5d momentum +8.7% (+1)",
+        "Beta 1.7 (+0.5)"
+      ],
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 66.4,
+      "macd": {
+        "macd": 14.4339,
+        "signal": 8.6691,
+        "hist": 5.7647
+      },
+      "dayChangePct": -2.6,
+      "volumeRatio": 0.93,
+      "volumeSpike": false,
+      "lastClose": 433.45001220703125,
+      "momentum5dPct": 8.71,
+      "atrPct": 3.88,
+      "ivr": 22.8950967,
+      "ivIndex": 52.3274376,
+      "beta": 1.712535657,
+      "liquidityRating": 4,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": 1,
+      "expiryDate": "2026-05-13"
+    }
+  ]
+}
