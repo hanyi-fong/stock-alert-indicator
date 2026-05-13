@@ -39,10 +39,12 @@ function formatPCR(pcr, pcrSignal) {
  * Build the text body for a single signal card.
  */
 function buildSignalBlock(s, divider) {
-  const emoji   = s.direction === "CALL" ? "🟢" : "🔴";
+  const emoji   = s.direction === "CALL" ? "🟢" : s.direction === "PUT" ? "🔴" : "⚪";
   const action  = s.direction === "CALL"
     ? "Buy CALL (short-dated, 3-7 DTE)"
-    : "Buy PUT  (short-dated, 3-7 DTE)";
+    : s.direction === "PUT"
+    ? "Buy PUT  (short-dated, 3-7 DTE)"
+    : "Monitor (on watchlist)";
 
   const scoreLabel = `${s.score > 0 ? "+" : ""}${s.score}`;
   const earningsBadge = s.isEarningsPlay ? "  🚨 EARNINGS PLAY" : "";
@@ -60,14 +62,28 @@ function buildSignalBlock(s, divider) {
     lines.push(`   🚨 Earnings : *${s.daysToEarnings} day(s) away* (${s.earningsNextDate})`);
   }
 
+  const b = s.breakdown || {};
+  const ivrScore = b.ivr ? ` (*${b.ivr}*)` : "";
+  const rsiScore = b.rsi ? ` (*${b.rsi}*)` : "";
+  const macdScore = b.macd ? ` (*${b.macd}*)` : "";
+  const volScore = b.volume ? ` (*${b.volume}*)` : "";
+  const momentumScore = b.momentum ? ` (*${b.momentum}*)` : "";
+  
+  const betaScore = b.beta ? `Beta: *${b.beta}*` : "";
+  const atrScore = b.atr ? `ATR: *${b.atr}*` : "";
+  const betaAtrStr = [betaScore, atrScore].filter(Boolean).join(", ");
+  const betaAtrScore = betaAtrStr ? ` (${betaAtrStr})` : "";
+  
+  const pcrScore = b.pcr ? ` (*${b.pcr}*)` : "";
+
   lines.push(
-    `   IVR        : ${formatIVR(s.ivr)}`,
-    `   RSI        : ${s.rsi ?? "n/a"}`,
-    `   MACD hist  : ${s.macd?.hist ?? "n/a"}`,
-    `   Vol ratio  : ${s.volumeRatio ?? "n/a"}x`,
-    `   5d trend   : ${signed(s.momentum5dPct)}%`,
-    `   Beta / ATR : ${s.beta?.toFixed(1) ?? "n/a"} / ${s.atrPct?.toFixed(1) ?? "n/a"}%`,
-    `   Put/Call   : ${formatPCR(s.pcr, s.pcrSignal)}`,
+    `   IVR        : ${formatIVR(s.ivr)}${ivrScore}`,
+    `   RSI        : ${s.rsi ?? "n/a"}${rsiScore}`,
+    `   MACD hist  : ${s.macd?.hist ?? "n/a"}${macdScore}`,
+    `   Vol ratio  : ${s.volumeRatio ?? "n/a"}x${volScore}`,
+    `   5d trend   : ${signed(s.momentum5dPct)}%${momentumScore}`,
+    `   Beta / ATR : ${s.beta?.toFixed(1) ?? "n/a"} / ${s.atrPct?.toFixed(1) ?? "n/a"}%${betaAtrScore}`,
+    `   Put/Call   : ${formatPCR(s.pcr, s.pcrSignal)}${pcrScore}`,
     `   Watchlists : ${watchlistLabel}`,
     `   Reasons    : ${s.reasons.join(" | ")}`,
     `   👉 ${action}`,
@@ -98,10 +114,11 @@ export async function sendGoogleChatAlert(signals, runTime) {
 
   const callCount = signals.filter(s => s.direction === "CALL").length;
   const putCount  = signals.filter(s => s.direction === "PUT").length;
+  const watchCount = signals.filter(s => s.direction === "WATCH").length;
 
   const header = [
     `🔔 *Stock Scanner Alert* — ${runTime}`,
-    `${signals.length} signal(s) found  |  🟢 ${callCount} CALL  🔴 ${putCount} PUT`,
+    `${signals.length} signal(s) found  |  🟢 ${callCount} CALL  🔴 ${putCount} PUT${watchCount > 0 ? `  ⚪ ${watchCount} WATCH` : ''}`,
     "_Ranked by composite score (technical + IVR + earnings + beta + options flow)_",
   ].join("\n");
 

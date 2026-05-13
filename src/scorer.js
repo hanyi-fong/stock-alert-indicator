@@ -29,6 +29,7 @@ const EARNINGS_MIN_ABS  = 2;   // min |score| to include as earnings play
 export function compositeScore(tech, metrics, chain) {
   let score   = 0;
   const reasons = [...(tech.reasons ?? [])];
+  const breakdown = { ...(tech.breakdown ?? {}) };
 
   // ─── Technical signals (already computed by indicators.js) ───────────────
   // We re-derive from the tech object rather than re-computing.
@@ -44,17 +45,21 @@ export function compositeScore(tech, metrics, chain) {
     if (tech.momentum5dPct >= 15) {
       score -= 2; // Penalise CALL score for exhaustion risk
       isOverextended = true;
-      reasons.push(`⚠️ Overextended (+${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk`);
+      reasons.push(`⚠️ Overextended (+${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk (-2)`);
+      breakdown.momentum = "-2";
     } else if (tech.momentum5dPct <= -15) {
       score += 2; // Penalise PUT score for exhaustion risk
       isOverextended = true;
-      reasons.push(`⚠️ Overextended (${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk`);
+      reasons.push(`⚠️ Overextended (${tech.momentum5dPct.toFixed(1)}% in 5d) — exhaustion risk (+2)`);
+      breakdown.momentum = "+2";
     } else if (tech.momentum5dPct >= 4) {
       score += 1;
-      reasons.push(`5d momentum +${tech.momentum5dPct.toFixed(1)}%`);
+      reasons.push(`5d momentum +${tech.momentum5dPct.toFixed(1)}% (+1)`);
+      breakdown.momentum = "+1";
     } else if (tech.momentum5dPct <= -4) {
       score -= 1;
-      reasons.push(`5d momentum ${tech.momentum5dPct.toFixed(1)}%`);
+      reasons.push(`5d momentum ${tech.momentum5dPct.toFixed(1)}% (-1)`);
+      breakdown.momentum = "-1";
     }
   }
 
@@ -62,8 +67,10 @@ export function compositeScore(tech, metrics, chain) {
   if (tech.atrPct !== undefined && tech.atrPct !== null && tech.atrPct >= 4) {
     // Add to magnitude in whichever direction we're already going
     const bonus = 0.5;
-    score += score >= 0 ? bonus : -bonus;
-    reasons.push(`ATR ${tech.atrPct.toFixed(1)}% (high volatility)`);
+    const added = score >= 0 ? bonus : -bonus;
+    score += added;
+    reasons.push(`ATR ${tech.atrPct.toFixed(1)}% (high volatility) (${added > 0 ? '+' : ''}${added})`);
+    breakdown.atr = `${added > 0 ? '+' : ''}${added}`;
   }
 
   // ─── Options market signals (from TastyTrade market-metrics) ─────────────
@@ -73,16 +80,21 @@ export function compositeScore(tech, metrics, chain) {
     // IVR bonus — market is pricing in a big move
     if (ivr !== null) {
       let ivrBonus = 0;
-      if (ivr >= 75)      { ivrBonus = 1.5; reasons.push(`IVR ${ivr.toFixed(0)} 🔥🔥 (very high)`); }
-      else if (ivr >= 50) { ivrBonus = 1.0; reasons.push(`IVR ${ivr.toFixed(0)} 🔥 (high)`); }
-      else if (ivr >= 30) { ivrBonus = 0.5; reasons.push(`IVR ${ivr.toFixed(0)} (elevated)`); }
+      let ivrStr = "";
+      if (ivr >= 75)      { ivrBonus = 1.5; ivrStr = `IVR ${ivr.toFixed(0)} 🔥🔥 (very high)`; }
+      else if (ivr >= 50) { ivrBonus = 1.0; ivrStr = `IVR ${ivr.toFixed(0)} 🔥 (high)`; }
+      else if (ivr >= 30) { ivrBonus = 0.5; ivrStr = `IVR ${ivr.toFixed(0)} (elevated)`; }
 
       // IVR bonus amplifies the existing direction
       if (ivrBonus > 0) {
         if (isOverextended) {
-          reasons.push(`IVR bonus neutralized (stock overextended)`);
+          reasons.push(`${ivrStr} neutralized (stock overextended)`);
+          breakdown.ivr = "neutralized";
         } else {
-          score += score >= 0 ? ivrBonus : -ivrBonus;
+          const added = score >= 0 ? ivrBonus : -ivrBonus;
+          score += added;
+          reasons.push(`${ivrStr} (${added > 0 ? '+' : ''}${added})`);
+          breakdown.ivr = `${added > 0 ? '+' : ''}${added}`;
         }
       }
     }
@@ -90,24 +102,32 @@ export function compositeScore(tech, metrics, chain) {
     // Beta bonus — high-beta stocks make bigger moves
     if (beta !== null && Math.abs(beta) >= 2.0) {
       const bonus = 1.0;
-      score += score >= 0 ? bonus : -bonus;
-      reasons.push(`Beta ${beta.toFixed(1)} (high-amplitude)`);
+      const added = score >= 0 ? bonus : -bonus;
+      score += added;
+      reasons.push(`Beta ${beta.toFixed(1)} (high-amplitude) (${added > 0 ? '+' : ''}${added})`);
+      breakdown.beta = `${added > 0 ? '+' : ''}${added}`;
     } else if (beta !== null && Math.abs(beta) >= 1.5) {
       const bonus = 0.5;
-      score += score >= 0 ? bonus : -bonus;
-      reasons.push(`Beta ${beta.toFixed(1)}`);
+      const added = score >= 0 ? bonus : -bonus;
+      score += added;
+      reasons.push(`Beta ${beta.toFixed(1)} (${added > 0 ? '+' : ''}${added})`);
+      breakdown.beta = `${added > 0 ? '+' : ''}${added}`;
     }
 
     // Liquidity filter — penalize illiquid options chains
     if (liqScore === 1) {
       // F rating — no tradeable options; heavily penalise
+      const penalty = -(score * 0.5);
       score *= 0.5;
-      reasons.push("⚠️ Liquidity F (options illiquid)");
+      reasons.push(`⚠️ Liquidity F (options illiquid) (${penalty > 0 ? '+' : ''}${penalty.toFixed(1)})`);
+      breakdown.liquidity = `${penalty > 0 ? '+' : ''}${penalty.toFixed(1)}`;
     } else if (liqScore === 2) {
       // D rating — poor but tradeable; apply a moderate penalty so Full Scan
       // results are consistent with Fast Scan's pre-filter that excludes D-rated stocks.
+      const penalty = -(score * 0.25);
       score *= 0.75;
-      reasons.push("⚠️ Liquidity D (poor options liquidity)");
+      reasons.push(`⚠️ Liquidity D (poor options liquidity) (${penalty > 0 ? '+' : ''}${penalty.toFixed(1)})`);
+      breakdown.liquidity = `${penalty > 0 ? '+' : ''}${penalty.toFixed(1)}`;
     }
   }
 
@@ -118,12 +138,14 @@ export function compositeScore(tech, metrics, chain) {
     if (pcr < 0.65) {
       // Heavy call buying → bullish institutional flow
       score += 1;
-      reasons.push(`PCR ${pcr.toFixed(2)} (call-heavy flow)`);
+      reasons.push(`PCR ${pcr.toFixed(2)} (call-heavy flow) (+1)`);
+      breakdown.pcr = "+1";
       pcrSignal = "CALL-HEAVY";
     } else if (pcr > 1.5) {
       // Heavy put buying → bearish institutional flow
       score -= 1;
-      reasons.push(`PCR ${pcr.toFixed(2)} (put-heavy flow)`);
+      reasons.push(`PCR ${pcr.toFixed(2)} (put-heavy flow) (-1)`);
+      breakdown.pcr = "-1";
       pcrSignal = "PUT-HEAVY";
     } else {
       pcrSignal = "NEUTRAL";
@@ -133,10 +155,13 @@ export function compositeScore(tech, metrics, chain) {
   // ─── Earnings catalyst multiplier ────────────────────────────────────────
   let isEarningsPlay = false;
   if (metrics?.isEarningsPlay && Math.abs(score) >= EARNINGS_MIN_ABS) {
+    const oldScore = score;
     const multiplier = 1.5;
     score = +(score * multiplier).toFixed(2);
     isEarningsPlay = true;
-    reasons.push(`🚨 EARNINGS in ${metrics.daysToEarnings} day(s)`);
+    const added = +(score - oldScore).toFixed(1);
+    reasons.push(`🚨 EARNINGS in ${metrics.daysToEarnings} day(s) (${added > 0 ? '+' : ''}${added})`);
+    breakdown.earnings = `${added > 0 ? '+' : ''}${added}`;
   }
 
   // ─── Explicit score cap ───────────────────────────────────────────────────
@@ -155,6 +180,7 @@ export function compositeScore(tech, metrics, chain) {
 
   return {
     score,
+    breakdown,
     direction,
     reasons,
     isEarningsPlay,
@@ -182,21 +208,23 @@ export function compositeScore(tech, metrics, chain) {
   };
 }
 
-/**
- * Rank all scanned symbols and return the top N by composite score.
- *
- * @param {Array<{ ticker: string, tech: object, metrics: object|null, chain: object|null }>} candidates
- * @param {number} topN  — max results to return (default 10)
- * @returns {Array<object>}  sorted by |compositeScore| descending
- */
 export function rankCandidates(candidates, topN = 10) {
+  const envWatchlistRaw = process.env.WATCHLIST || "";
+  const envWatchlist = envWatchlistRaw ? envWatchlistRaw.split(",").map(t => t.trim().toUpperCase()) : [];
+
   const scored = candidates
-    .map(({ ticker, tech, metrics, chain, watchlists }) => ({
-      ticker,
-      watchlists,
-      ...compositeScore(tech, metrics, chain),
-    }))
-    .filter(s => s.direction !== null); // must have a clear CALL or PUT
+    .map(({ ticker, tech, metrics, chain, watchlists }) => {
+      const res = compositeScore(tech, metrics, chain);
+      if (res.direction === null && envWatchlist.includes(ticker)) {
+        res.direction = "WATCH";
+      }
+      return {
+        ticker,
+        watchlists,
+        ...res,
+      };
+    })
+    .filter(s => s.direction !== null); // must have a clear CALL, PUT, or WATCH
 
   // Sort by absolute score descending (biggest magnitude = most extreme setup)
   // Tie-breakers: IVR descending, then Volume Ratio descending
@@ -211,5 +239,9 @@ export function rankCandidates(candidates, topN = 10) {
     return volDiff; // Tertiary sort: Volume Ratio
   });
 
-  return scored.slice(0, topN);
+  // Ensure env WATCHLIST items are always included, bypassing topN
+  const topSignals = scored.slice(0, topN);
+  const watchSignals = scored.filter(s => envWatchlist.includes(s.ticker) && !topSignals.includes(s));
+  
+  return [...topSignals, ...watchSignals];
 }

@@ -102,20 +102,21 @@ export function calcIndicators(candles, cfg) {
   // Score > 0 = bullish (CALL candidate), < 0 = bearish (PUT candidate)
   let score = 0;
   const reasons = [];
+  const breakdown = {};
 
   // ── MACD contribution ─────────────────────────────────
   const macdContrib = macdBullish ? 2 : macdBearish ? -2 : 0;
-  if (macdBullish) reasons.push("MACD bullish crossover");
-  if (macdBearish) reasons.push("MACD bearish crossover");
+  if (macdBullish) { reasons.push("MACD bullish crossover (+2)"); breakdown.macd = "+2"; }
+  if (macdBearish) { reasons.push("MACD bearish crossover (-2)"); breakdown.macd = "-2"; }
 
   // ── RSI contribution ──────────────────────────────────
   // Extreme levels get extra weight (±3 vs ±2)
   let rsiContrib = 0;
   if (rsiCurr !== null) {
-    if      (rsiCurr <= 25)               { rsiContrib =  3; reasons.push(`RSI extreme oversold (${rsiCurr.toFixed(1)})`); }
-    else if (rsiCurr <= cfg.rsiOversold)  { rsiContrib =  2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)})`); }
-    else if (rsiCurr >= 75)               { rsiContrib = -3; reasons.push(`RSI extreme overbought (${rsiCurr.toFixed(1)})`); }
-    else if (rsiCurr >= cfg.rsiOverbought){ rsiContrib = -2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)})`); }
+    if      (rsiCurr <= 25)               { rsiContrib =  3; reasons.push(`RSI extreme oversold (${rsiCurr.toFixed(1)}) (+3)`); breakdown.rsi = "+3"; }
+    else if (rsiCurr <= cfg.rsiOversold)  { rsiContrib =  2; reasons.push(`RSI oversold (${rsiCurr.toFixed(1)}) (+2)`); breakdown.rsi = "+2"; }
+    else if (rsiCurr >= 75)               { rsiContrib = -3; reasons.push(`RSI extreme overbought (${rsiCurr.toFixed(1)}) (-3)`); breakdown.rsi = "-3"; }
+    else if (rsiCurr >= cfg.rsiOverbought){ rsiContrib = -2; reasons.push(`RSI overbought (${rsiCurr.toFixed(1)}) (-2)`); breakdown.rsi = "-2"; }
   }
 
   // ── Diminishing returns: RSI + MACD correlation cap ───
@@ -127,21 +128,24 @@ export function calcIndicators(candles, cfg) {
   if (macdContrib !== 0 && rsiContrib !== 0 && Math.sign(macdContrib) === Math.sign(rsiContrib)) {
     const cap = Math.sign(combinedRsiMacd) * Math.min(4, Math.abs(combinedRsiMacd));
     if (Math.abs(combinedRsiMacd) > 4) {
-      reasons.push(`RSI+MACD correlation cap (raw ${combinedRsiMacd > 0 ? '+' : ''}${combinedRsiMacd} → capped ${cap > 0 ? '+' : ''}${cap})`);
+      const diff = cap - combinedRsiMacd;
+      reasons.push(`RSI+MACD correlation cap (${diff > 0 ? '+' : ''}${diff})`);
+      breakdown.correlationCap = `${diff > 0 ? '+' : ''}${diff}`;
     }
     combinedRsiMacd = cap;
   }
   score += combinedRsiMacd;
 
-  if (bbBreakoutDown) { score += 1; reasons.push("BB lower band touch"); }
-  if (bbBreakoutUp)   { score -= 1; reasons.push("BB upper band breach"); }
-  if (volumeSpike && bigMoveUp)   { score += 1; reasons.push(`Volume spike ${volumeRatio}x + up ${dayChangePct}%`); }
-  if (volumeSpike && bigMoveDown) { score -= 1; reasons.push(`Volume spike ${volumeRatio}x + down ${dayChangePct}%`); }
+  if (bbBreakoutDown) { score += 1; reasons.push("BB lower band touch (+1)"); breakdown.bb = "+1"; }
+  if (bbBreakoutUp)   { score -= 1; reasons.push("BB upper band breach (-1)"); breakdown.bb = "-1"; }
+  if (volumeSpike && bigMoveUp)   { score += 1; reasons.push(`Volume spike ${volumeRatio}x + up ${dayChangePct}% (+1)`); breakdown.volume = "+1"; }
+  if (volumeSpike && bigMoveDown) { score -= 1; reasons.push(`Volume spike ${volumeRatio}x + down ${dayChangePct}% (-1)`); breakdown.volume = "-1"; }
 
   const direction = score >= 2 ? "CALL" : score <= -2 ? "PUT" : null;
 
   return {
     score,
+    breakdown,
     direction,        // "CALL", "PUT", or null — technical direction only
     reasons,
     macd: macdCurr ? { macd: +macdCurr.MACD.toFixed(4), signal: +macdCurr.signal.toFixed(4), hist: +macdCurr.histogram.toFixed(4) } : null,

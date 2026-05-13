@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Alert Signals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Signal Tracker</h1>
+                <p>10-Day Performance Verification Engine</p>
+            </div>
+            <div class="stats" id="global-stats">
+                <div class="stat-box">
+                    <span class="stat-value" id="stat-signals">0</span>
+                    <span class="stat-label">Active Signals</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="stat-winrate">0%</span>
+                    <span class="stat-label">Overall Win Rate</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="filters">
+                <input type="text" id="search" placeholder="Search Ticker...">
+                <select id="direction-filter">
+                    <option value="ALL">All Directions</option>
+                    <option value="CALL">CALL</option>
+                    <option value="PUT">PUT</option>
+                </select>
+                <div class="last-updated" id="last-updated">Last Updated: --</div>
+            </div>
+
+            <div class="grid" id="signals-grid">
+                <!-- Cards will be dynamically injected here -->
+            </div>
+            
+            <div id="loading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading Verification Report...</p>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

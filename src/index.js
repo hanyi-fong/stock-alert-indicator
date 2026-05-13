@@ -1,12 +1,11 @@
 import { CONFIG }                    from "./watchlist.js";
 import { calcIndicators }            from "./indicators.js";
-import { sendGoogleChatAlert, sendVerificationAlert } from "./notifier.js";
+import { sendGoogleChatAlert }       from "./notifier.js";
 import { buildUniverse }             from "./tasty/watchlists.js";
 import { fetchMarketMetrics }        from "./tasty/market-metrics.js";
 import { enrichWithOptionChain }     from "./tasty/option-chain.js";
 import { rankCandidates }            from "./scorer.js";
-import { saveScanResult, loadPreviousResult, saveVerificationResult } from "./history.js";
-import { verifySignals }             from "./verifier.js";
+import { saveScanResult }            from "./history.js";
 
 const DRY_RUN   = process.argv.includes("--dry-run");
 const FULL_SCAN = process.argv.includes("--full-scan");
@@ -145,7 +144,11 @@ async function main() {
   // Pre-filter (1st Level Scan)
   // FULL SCAN: remove F-rated symbols only if we have metrics for them
   // FAST SCAN: additionally remove low-potential stocks (e.g. low liquidity or low IVR)
+  const envWatchlist = process.env.WATCHLIST ? process.env.WATCHLIST.split(",").map(s => s.trim().toUpperCase()) : [];
+
   const universe_filtered = allSymbols.filter(sym => {
+    if (envWatchlist.includes(sym)) return true; // always keep env WATCHLIST
+
     const m = metricsMap.get(sym);
     if (!m) return true; // no metrics → keep it
     
@@ -233,8 +236,9 @@ async function main() {
     for (const s of topSignals) {
       const earningsBadge = s.isEarningsPlay ? " 🚨 EARNINGS" : "";
       const ivrLabel      = s.ivr !== null ? ` IVR ${s.ivr.toFixed(0)}` : "";
+      const emoji = s.direction === "CALL" ? "🟢" : s.direction === "PUT" ? "🔴" : "⚪";
       console.log(
-        `  ${s.direction === "CALL" ? "🟢" : "🔴"} ${s.ticker.padEnd(6)}` +
+        `  ${emoji} ${s.ticker.padEnd(6)}` +
         ` → ${s.direction} | score ${s.score}${ivrLabel}${earningsBadge}` +
         ` | ${s.reasons.slice(0, 3).join(", ")}`
       );
@@ -250,24 +254,12 @@ async function main() {
   }
 
   await sendGoogleChatAlert(topSignals, runTime);
-  saveScanResult(topSignals, session);
-
-  // ── STEP 9: Intraday Verification (Afternoon only) ───────────────────────
-  if (IS_VERIFICATION_RUN) {
-    console.log("\n============================================================");
-    console.log("🔍  STEP 9: Running verification on previous scan...");
-    
-    const prevSession = session === "afternoon" ? "morning" : "manual-record";
-    const prevSignals = loadPreviousResult(prevSession);
-    
-    if (prevSignals && prevSignals.length > 0) {
-      const verificationData = await verifySignals(prevSignals);
-      saveVerificationResult(verificationData, session);
-      await sendVerificationAlert(verificationData, runTime);
-    } else {
-      console.log(`  ℹ️  No signals from ${prevSession} to verify.`);
-    }
+  
+  if (session !== "manual") {
+    saveScanResult(topSignals, session);
   }
+
+
 }
 
 main().catch(err => {

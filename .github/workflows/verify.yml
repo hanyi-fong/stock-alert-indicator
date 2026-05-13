@@ -1,0 +1,45 @@
+name: Verify Signals
+
+on:
+  schedule:
+    # Run at 4:00 PM ET (20:00 UTC during EDT) Mon-Fri
+    - cron: "0 20 * * 1-5"
+
+  workflow_dispatch:
+    inputs:
+      verify_days:
+        description: 'Number of days to verify (default 10)'
+        required: false
+        default: '10'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run verification
+        env:
+          VERIFY_DAYS: ${{ github.event.inputs.verify_days || vars.VERIFY_DAYS || '10' }}
+        run: node src/verify-history.js
+
+      - name: Commit verification report
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add history/verification-report.json docs/data.json
+          git commit -m "Auto-update 10-day verification report and dashboard data" || echo "No changes to commit"
+          git push

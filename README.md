@@ -39,7 +39,9 @@ TASTYTRADE_REFRESH_TOKEN="your_tastytrade_refresh_token"
 # TASTYTRADE_WATCHLISTS="Tasty,Liquid,High IV"
 ```
 
-### Running Locally
+### Running Locally (No Recording)
+
+The standard commands will scan the market and send an alert to Google Chat, but will **not** record history files or trigger any verification:
 
 ```bash
 # 1. Install dependencies
@@ -51,29 +53,47 @@ npm run scan
 # 3. Run a comprehensive scan (Full Market)
 npm run scan:full
 
-# 4. Dry run (no alerts sent)
+# 4. Dry run (only prints to terminal, no Google Chat alerts)
 npm run test
 ```
 
-### Verification & History Tracking
+### Verification & 10-Day Lifecycle Tracking
 
-The scanner includes an automated engine to record predictions and verify intraday performance:
+The scanner includes an advanced automated engine that tracks the lifecycle of every generated signal for up to **10 days**.
 
 ```bash
 # 1. Run a morning scan and record results
 npm run scan:morning
 
-# 2. Run an afternoon scan, record results, and VERIFY the morning signals
+# 2. Run an afternoon scan and record results
 npm run scan:afternoon
 
-# 3. Manually record and verify a custom scan
-npm run scan:manual-record
-npm run scan:manual-verify
+# 3. Run the verification engine (tracks up to 10 days of signals)
+node src/verify-history.js
 ```
 
-*   **Morning Scan (9:35 AM):** Generates `history/YYYY-MM-DD-morning.json`.
-*   **Afternoon Scan (3:30 PM):** Generates `history/YYYY-MM-DD-afternoon.json`. It also reads the morning file, fetches intraday data (highs/lows/current price) to calculate the max favorable excursion, and saves `history/YYYY-MM-DD-verification.json`.
-*   **GitHub Actions:** Automatically runs morning and afternoon scans, sends a verification report to Google Chat at 3:30 PM, and commits the JSON files back to this repository for historical tracking.
+*   **Morning/Afternoon Scans:** Generate signals and save them to `history/YYYY-MM-DD-morning.json` and `history/YYYY-MM-DD-afternoon.json`.
+*   **10-Day Lifecycle Engine:** The `verify-history.js` script parses all history files. When a ticker is detected, it is tracked for the next 10 days (or until its direction reverses). Daily closing prices and max favorable excursion data are calculated using Yahoo Finance and saved to `history/verification-report.json`.
+*   **GitHub Actions Automation:** 
+    * The scanner runs daily at 9:35 AM and 3:30 PM ET.
+    * The verifier runs daily at 4:00 PM ET as a separate job.
+    * All history and verification data is automatically committed back to the repository.
+
+### GitHub Pages Dashboard
+A premium, dark-mode dashboard is included to visually track the performance of your signals over their 10-day lifespan.
+
+**To Enable GitHub Pages:**
+1. Go to your repository **Settings** → **Pages**.
+2. Under "Build and deployment", set the **Source** to "Deploy from a branch".
+3. Select your `master` (or main) branch, and choose the `/docs` folder.
+4. Click **Save**. Your verification dashboard will be live in a few minutes!
+
+**Local Preview:**
+To preview the dashboard locally, simply run:
+```bash
+npx serve docs
+```
+Then open `http://localhost:3000` in your browser.
 
 ### 4. Fast Scan vs Full Scan
 By default, the scanner runs in **Fast Scan** mode, which filters out low-potential stocks (poor liquidity or low IVR) before the technical analysis phase. This significantly improves performance and avoids API rate limits.
