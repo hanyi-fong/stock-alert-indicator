@@ -1,0 +1,271 @@
+{
+  "updatedAt": "2026-05-13T21:15:12.682Z",
+  "maxTrackDays": 20,
+  "defaultVerifyDays": 10,
+  "defaultTargetPct": 30,
+  "defaultStopLossPct": 30,
+  "stats": {
+    "total": 10,
+    "completed": 0,
+    "open": 10,
+    "wins": 0,
+    "losses": 0,
+    "winRate": "0.00%",
+    "targetWins": 0,
+    "stopLosses": 0,
+    "expiredWins": 0,
+    "expiredLoss": 0
+  },
+  "tracks": [
+    {
+      "trackId": "RR_CALL_1778706586991",
+      "ticker": "RR",
+      "direction": "CALL",
+      "score": 7,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 2.82,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 2.819999933242798,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 7.62,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "FCX_CALL_1778706586991",
+      "ticker": "FCX",
+      "direction": "CALL",
+      "score": 5.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 67.16,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 67.16000366210938,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 2.52,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "RKLB_PUT_1778706586991",
+      "ticker": "RKLB",
+      "direction": "PUT",
+      "score": -5.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 124.15,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 124.1500015258789,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 5.85,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "AIRS_PUT_1778706586991",
+      "ticker": "AIRS",
+      "direction": "PUT",
+      "score": -5.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 4.66,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 4.659999847412109,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 12.45,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "F_CALL_1778706586991",
+      "ticker": "F",
+      "direction": "CALL",
+      "score": 5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 13.57,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 13.569999694824219,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 2.73,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "ALIT_PUT_1778706586991",
+      "ticker": "ALIT",
+      "direction": "PUT",
+      "score": -5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 0.79,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 0.7914999723434448,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 13.81,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "CLSK_PUT_1778706586991",
+      "ticker": "CLSK",
+      "direction": "PUT",
+      "score": -5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 13.3,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 13.300000190734863,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 1.58,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "CPB_PUT_1778706586991",
+      "ticker": "CPB",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 20.35,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 20.350000381469727,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 1.25,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "SOXS_CALL_1778706586991",
+      "ticker": "SOXS",
+      "direction": "CALL",
+      "score": 4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 8.35,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 8.350000381469727,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 7.54,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "SOXL_PUT_1778706586991",
+      "ticker": "SOXL",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-13T21:09:46.991Z",
+      "startPrice": 184.24,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 184.24000549316406,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 6.5,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    }
+  ]
+}
