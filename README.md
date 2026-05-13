@@ -116,11 +116,13 @@ A premium, dark-mode dashboard is included to visually track the performance of 
 4. Click **Save**. Your verification dashboard will be live in a few minutes!
 
 **Local Preview:**
-To preview the dashboard locally, simply run:
+To preview the dashboard locally and ensure it has access to your `/local` history files:
 ```bash
-npx serve docs
+# Run from the project root (to allow access to /local folder)
+npx serve .
 ```
-Then open `http://localhost:3000` in your browser.
+Then open `http://localhost:3000/docs/index.html` in your browser.
+
 
 ### 4. Fast Scan vs Full Scan
 By default, the scanner runs in **Fast Scan** mode, which filters out low-potential stocks (poor liquidity or low IVR) before the technical analysis phase. This significantly improves performance and avoids API rate limits.

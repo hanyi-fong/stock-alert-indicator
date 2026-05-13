@@ -7,8 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allTracks = [];
 
+    // Environment Detection
+    const isLocal = window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1';
+
+    // In local testing, we assume the server is running from the project root.
+    // In production (GitHub), we fetch from the current directory.
+    const DATA_SOURCE = isLocal ? '../local/data.json' : 'data.json';
+
     // Fetch data
-    fetch('data.json')
+    fetch(DATA_SOURCE)
         .then(res => {
             if (!res.ok) throw new Error("Could not fetch data.json");
             return res.json();
