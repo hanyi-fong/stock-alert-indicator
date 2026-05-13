@@ -25,7 +25,7 @@ on:
         description: 'Save history to repository'
         type: boolean
         required: false
-        default: true
+        default: false
       watchlist:
         description: 'Comma separated WATCHLIST'
         type: string
