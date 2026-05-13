@@ -12,7 +12,8 @@
     "scan:manual-verify": "node --env-file=.env src/index.js --verify-manual",
     "scan:full": "node --env-file=.env src/index.js --full-scan",
     "test": "node --test tests/*.test.js",
-    "test:ui": "node scripts/generate-mock-data.js"
+    "test:ui": "node scripts/generate-mock-data.js",
+    "test:schema": "node --test tests/schema-consistency.test.js"
   },
   "dependencies": {
     "technicalindicators": "^3.1.0"

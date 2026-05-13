@@ -57,22 +57,19 @@ npm run scan:full
 npm run test
 ```
 
-### Verification & Lifecycle Tracking
+### Performance Verification & Lifecycle Tracking
 
-The scanner includes an advanced automated engine that tracks the lifecycle of every generated signal.
+The scanner includes a high-fidelity automated engine that tracks the complete lifecycle of every generated signal.
 
-**Win/Loss Logic:**
-- **WIN**: The signal hits `+30%` profit before hitting the stop loss or expiring.
-- **LOSS**: The signal hits `-30%` stop loss before hitting the target profit.
-- **Expiration**: If it holds for 10 trading days (excluding weekends and market holidays) without hitting either target, it is resolved to a WIN or LOSS depending on the return on the 10th trading day.
+**High-Fidelity Tracking:**
+- **20-Day Raw Data:** Unlike basic trackers that stop after an exit is hit, our engine always collects **20 days** of price action. This allows the dashboard to simulate different scenarios even after a trade is "closed."
+- **Multi-Trade Support:** Supports multiple concurrent or sequential trades for the same ticker (e.g., a `CALL` and a `PUT` on AAPL at once).
+- **Win/Loss Simulation:**
+    - **WIN**: Hits the target profit (default `+30%`) before hitting the stop loss or expiring.
+    - **LOSS**: Hits the stop loss (default `-30%`) before hitting the target.
+    - **Expiration**: If neither is hit within the expiry window (default 10 days), the trade resolves based on the return at the end of that window.
 
-You can configure the thresholds via `.env`:
-```env
-VERIFY_DAYS=10
-TARGET_PROFIT_PCT=30
-STOP_LOSS_PCT=30
-```
-
+**Usage:**
 ```bash
 # 1. Run a morning scan and record results
 npm run scan:morning
@@ -80,7 +77,7 @@ npm run scan:morning
 # 2. Run an afternoon scan and record results
 npm run scan:afternoon
 
-# 3. Run the verification engine
+# 3. Run the verification engine (collects 20 days of data per track)
 node src/verify-history.js
 ```
 
@@ -91,23 +88,36 @@ node src/verify-history.js
     * The verifier runs daily at 4:00 PM ET as a separate job.
     * All history and verification data is automatically committed back to the repository.
 
-### Running Tests
+### Testing
 
-We use the native Node.js test runner for unit tests. To verify the math and logic of the win/loss calculation:
+We use a multi-tier testing strategy to ensure reliability:
+
+#### 1. Logic & Math Tests
+Validates the pure functions for win/loss calculation and threshold logic.
 ```bash
 npm test
 ```
 
-### Visual UI Testing (Dashboard)
-
-To test the GitHub Pages dashboard locally with synthetic WIN, LOSS, and OPEN scenarios:
+#### 2. Visual Dashboard Testing
+Generates 10 diverse mock scenarios (concurrent trades, sequential trades, tight thresholds) to test the UI.
 ```bash
 npm run test:ui
 ```
-Then, you can preview the generated data in your browser.
+
+#### 3. Schema Consistency Tests
+Ensures that the mock data generator and the production verification engine stay in perfect sync regarding the JSON data format.
+```bash
+npm run test:schema
+```
 
 ### GitHub Pages Dashboard
-A premium, dark-mode dashboard is included to visually track the performance of your signals over their 10-day lifespan.
+A premium, dark-mode dashboard is included to visually track performance and simulate outcomes.
+
+**Key Features:**
+- **⚙️ Global Threshold Sliders**: Adjust Target %, Stop Loss %, and Expiry Days live. The entire dashboard (Win Rate, Stats, and Cards) updates instantly.
+- **Ghost Bars**: View price action collected *after* a trade was triggered (faded bars).
+- **Trigger Markers**: See exactly where a trade exited with `✕` markers on the chart.
+- **Persistence**: Your custom thresholds are saved to `localStorage` for your next visit.
 
 **To Enable GitHub Pages:**
 1. Go to your repository **Settings** → **Pages**.
