@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-const HISTORY_DIR = path.join(process.cwd(), "history");
+const isLocalTest = process.env.GITHUB_ACTIONS !== "true";
+const HISTORY_DIR = path.join(process.cwd(), isLocalTest ? "local/history" : "history");
 
 // Ensure history directory exists
 if (!fs.existsSync(HISTORY_DIR)) {

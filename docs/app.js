@@ -54,13 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (activeCount === 0) return;
 
-        let wins = 0;
-        allTracks.forEach(t => {
-            // Consider it a win if max excursion is > 1%
-            if (t.maxExcursionPct > 1.0) wins++;
-        });
-
-        const winRate = ((wins / activeCount) * 100).toFixed(1);
+        const completed = allTracks.filter(t => t.status !== "OPEN");
+        const wins = completed.filter(t => t.status === "WIN").length;
+        const winRate = completed.length > 0 ? ((wins / completed.length) * 100).toFixed(1) : "0.0";
+        
         document.getElementById('stat-winrate').textContent = `${winRate}%`;
     }
 
@@ -95,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const excursionClass = track.maxExcursionPct > 0 ? 'positive' : 'negative';
             const excursionSign = track.maxExcursionPct > 0 ? '+' : '';
+            
+            const statusBadge = track.status === 'OPEN' 
+                ? '<span class="badge" style="background: var(--surface-light); color: var(--text-secondary);">OPEN</span>'
+                : `<span class="badge ${track.status === 'WIN' ? 'call' : 'put'}">${track.status}</span>`;
 
             // Build tracking bars
             let barsHtml = '';
@@ -121,7 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="ticker">${track.ticker}</span>
                         <span class="date">${dateStr}</span>
                     </div>
-                    <span class="badge ${isCall ? 'call' : 'put'}">${track.direction}</span>
+                    <div style="display: flex; gap: 4px;">
+                        ${statusBadge}
+                        <span class="badge ${isCall ? 'call' : 'put'}">${track.direction}</span>
+                    </div>
                 </div>
                 
                 <div class="card-stats">

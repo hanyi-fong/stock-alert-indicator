@@ -57,9 +57,21 @@ npm run scan:full
 npm run test
 ```
 
-### Verification & 10-Day Lifecycle Tracking
+### Verification & Lifecycle Tracking
 
-The scanner includes an advanced automated engine that tracks the lifecycle of every generated signal for up to **10 days**.
+The scanner includes an advanced automated engine that tracks the lifecycle of every generated signal.
+
+**Win/Loss Logic:**
+- **WIN**: The signal hits `+30%` profit before hitting the stop loss or expiring.
+- **LOSS**: The signal hits `-30%` stop loss before hitting the target profit.
+- **Expiration**: If it holds for 10 trading days (excluding weekends and market holidays) without hitting either target, it is resolved to a WIN or LOSS depending on the return on the 10th trading day.
+
+You can configure the thresholds via `.env`:
+```env
+VERIFY_DAYS=10
+TARGET_PROFIT_PCT=30
+STOP_LOSS_PCT=30
+```
 
 ```bash
 # 1. Run a morning scan and record results
@@ -68,7 +80,7 @@ npm run scan:morning
 # 2. Run an afternoon scan and record results
 npm run scan:afternoon
 
-# 3. Run the verification engine (tracks up to 10 days of signals)
+# 3. Run the verification engine
 node src/verify-history.js
 ```
 
@@ -78,6 +90,21 @@ node src/verify-history.js
     * The scanner runs daily at 9:35 AM and 3:30 PM ET.
     * The verifier runs daily at 4:00 PM ET as a separate job.
     * All history and verification data is automatically committed back to the repository.
+
+### Running Tests
+
+We use the native Node.js test runner for unit tests. To verify the math and logic of the win/loss calculation:
+```bash
+npm test
+```
+
+### Visual UI Testing (Dashboard)
+
+To test the GitHub Pages dashboard locally with synthetic WIN, LOSS, and OPEN scenarios:
+```bash
+npm run test:ui
+```
+Then, you can preview the generated data in your browser.
 
 ### GitHub Pages Dashboard
 A premium, dark-mode dashboard is included to visually track the performance of your signals over their 10-day lifespan.

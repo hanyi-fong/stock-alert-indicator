@@ -1,11 +1,87 @@
 import fs from "fs";
 import path from "path";
 
-const HISTORY_DIR = path.join(process.cwd(), "history");
+const isLocalTest = process.env.GITHUB_ACTIONS !== "true";
+const HISTORY_DIR = path.join(process.cwd(), isLocalTest ? "local/history" : "history");
 const VERIFY_DAYS = parseInt(process.env.VERIFY_DAYS || "10", 10);
+const TARGET_PROFIT_PCT = parseFloat(process.env.TARGET_PROFIT_PCT || "30");
+const STOP_LOSS_PCT = parseFloat(process.env.STOP_LOSS_PCT || "30");
 
 // Helper to sleep
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+export function calculateVerificationStatus(track, startPrice, trackingCandles, verifyDays, targetProfitPct, stopLossPct) {
+  let status = "OPEN";
+  let daysHeld = 0;
+  let exitReason = null;
+  const dailyChanges = [];
+  let maxExcursionPct = 0;
+  
+  for (let idx = 0; idx < trackingCandles.length; idx++) {
+    const c = trackingCandles[idx];
+    daysHeld = idx + 1;
+    
+    let dayMaxPct, dayMinPct, pctChange;
+    
+    if (track.direction === "CALL") {
+      dayMaxPct = ((c.high - startPrice) / startPrice) * 100;
+      dayMinPct = ((c.low - startPrice) / startPrice) * 100;
+      pctChange = ((c.close - startPrice) / startPrice) * 100;
+    } else {
+      // PUT
+      dayMaxPct = ((startPrice - c.low) / startPrice) * 100;
+      dayMinPct = ((startPrice - c.high) / startPrice) * 100;
+      pctChange = ((startPrice - c.close) / startPrice) * 100;
+    }
+    
+    if (dayMaxPct > maxExcursionPct) maxExcursionPct = dayMaxPct;
+
+    dailyChanges.push({
+      day: idx,
+      date: c.date ? (typeof c.date === 'string' ? c.date.split('T')[0] : c.date.toISOString().split('T')[0]) : `Day ${idx}`,
+      close: c.close,
+      pctChange: parseFloat(pctChange.toFixed(2))
+    });
+
+    // Check if target or stop loss hit
+    let hitTarget = dayMaxPct >= targetProfitPct;
+    let hitStop = dayMinPct <= -stopLossPct;
+    
+    if (hitTarget && hitStop) {
+      status = "LOSS";
+      exitReason = "STOP_LOSS";
+      break;
+    } else if (hitTarget) {
+      status = "WIN";
+      exitReason = "TARGET_PROFIT";
+      break;
+    } else if (hitStop) {
+      status = "LOSS";
+      exitReason = "STOP_LOSS";
+      break;
+    }
+  }
+  
+  if (status === "OPEN" && trackingCandles.length >= verifyDays) {
+     const lastCandle = trackingCandles[trackingCandles.length - 1];
+     let pctChange;
+     if (track.direction === "CALL") {
+       pctChange = ((lastCandle.close - startPrice) / startPrice) * 100;
+     } else {
+       pctChange = ((startPrice - lastCandle.close) / startPrice) * 100;
+     }
+     status = pctChange > 0 ? "WIN" : "LOSS";
+     exitReason = "TIME_EXPIRED";
+  }
+
+  return {
+    dailyChanges,
+    maxExcursionPct: parseFloat(maxExcursionPct.toFixed(2)),
+    status,
+    daysHeld,
+    exitReason
+  };
+}
 
 /**
  * Fetch daily OHLCV candles directly from Yahoo Finance v8 API.
@@ -148,29 +224,13 @@ async function main() {
         // Take up to VERIFY_DAYS candles after start
         const trackingCandles = candles.slice(startIndex, startIndex + VERIFY_DAYS);
         
-        track.dailyChanges = trackingCandles.map((c, idx) => {
-          const change = c.close - startPrice;
-          const pctChange = (change / startPrice) * 100;
-          
-          // Calculate excursion (max favorable movement)
-          let currentExcursion = 0;
-          if (track.direction === "CALL") {
-            currentExcursion = ((c.high - startPrice) / startPrice) * 100;
-            if (currentExcursion > maxExcursionPct) maxExcursionPct = currentExcursion;
-          } else {
-            currentExcursion = ((startPrice - c.low) / startPrice) * 100;
-            if (currentExcursion > maxExcursionPct) maxExcursionPct = currentExcursion;
-          }
+        const result = calculateVerificationStatus(track, startPrice, trackingCandles, VERIFY_DAYS, TARGET_PROFIT_PCT, STOP_LOSS_PCT);
 
-          return {
-            day: idx,
-            date: c.date.toISOString().split('T')[0],
-            close: c.close,
-            pctChange: parseFloat(pctChange.toFixed(2))
-          };
-        });
-
-        track.maxExcursionPct = parseFloat(maxExcursionPct.toFixed(2));
+        track.dailyChanges = result.dailyChanges;
+        track.maxExcursionPct = result.maxExcursionPct;
+        track.status = result.status;
+        track.daysHeld = result.daysHeld;
+        track.exitReason = result.exitReason;
       }
       
       verifiedTracks.push(track);
@@ -186,18 +246,40 @@ async function main() {
   // Sort by date detected (newest first)
   verifiedTracks.sort((a, b) => new Date(b.dateDetected) - new Date(a.dateDetected));
 
+  const completed = verifiedTracks.filter(t => t.status !== "OPEN");
+  const wins = completed.filter(t => t.status === "WIN").length;
+  const losses = completed.filter(t => t.status === "LOSS").length;
+  const winRate = completed.length > 0 ? ((wins / completed.length) * 100).toFixed(2) + "%" : "0.00%";
+
+  console.log(`\n📊 Verification Stats:`);
+  console.log(`  Total Tracks: ${verifiedTracks.length}`);
+  console.log(`  Completed Trades: ${completed.length}`);
+  console.log(`  Wins: ${wins}`);
+  console.log(`  Losses: ${losses}`);
+  console.log(`  Win Rate: ${winRate}`);
+
   const reportPath = path.join(HISTORY_DIR, "verification-report.json");
   const payload = {
     updatedAt: new Date().toISOString(),
     verifyDays: VERIFY_DAYS,
+    targetProfitPct: TARGET_PROFIT_PCT,
+    stopLossPct: STOP_LOSS_PCT,
+    stats: {
+      total: verifiedTracks.length,
+      completed: completed.length,
+      open: verifiedTracks.length - completed.length,
+      wins,
+      losses,
+      winRate
+    },
     tracks: verifiedTracks
   };
 
   fs.writeFileSync(reportPath, JSON.stringify(payload, null, 2), "utf8");
   console.log(`\n💾 Saved verification report to ${reportPath} with ${verifiedTracks.length} tracks.`);
 
-  // Save a copy to docs/data.json for GitHub Pages
-  const docsDir = path.join(process.cwd(), "docs");
+  // Save a copy to docs/data.json for GitHub Pages (or local/ for local testing)
+  const docsDir = path.join(process.cwd(), isLocalTest ? "local" : "docs");
   if (!fs.existsSync(docsDir)) {
     fs.mkdirSync(docsDir, { recursive: true });
   }
@@ -206,7 +288,9 @@ async function main() {
   console.log(`💾 Saved copy for dashboard to ${docsDataPath}`);
 }
 
-main().catch(err => {
-  console.error("Fatal error during verification:", err);
-  process.exit(1);
-});
+if (process.argv[1] && process.argv[1].includes('verify-history.js')) {
+  main().catch(err => {
+    console.error("Fatal error during verification:", err);
+    process.exit(1);
+  });
+}
