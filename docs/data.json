@@ -1,0 +1,395 @@
+{
+  "updatedAt": "2026-05-14T20:00:30.941Z",
+  "maxTrackDays": 20,
+  "defaultVerifyDays": 10,
+  "defaultTargetPct": 30,
+  "defaultStopLossPct": 30,
+  "stats": {
+    "total": 16,
+    "completed": 0,
+    "open": 16,
+    "wins": 0,
+    "losses": 0,
+    "winRate": "0.00%",
+    "targetWins": 0,
+    "stopLosses": 0,
+    "expiredWins": 0,
+    "expiredLoss": 0
+  },
+  "tracks": [
+    {
+      "trackId": "MU_PUT_1778787312241",
+      "ticker": "MU",
+      "session": "afternoon",
+      "direction": "PUT",
+      "score": -5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 787.84,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "FANG_CALL_1778787312241",
+      "ticker": "FANG",
+      "session": "afternoon",
+      "direction": "CALL",
+      "score": 5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 200.12,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "MPLX_CALL_1778787312241",
+      "ticker": "MPLX",
+      "session": "afternoon",
+      "direction": "CALL",
+      "score": 4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 55.31,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "RDW_PUT_1778787312241",
+      "ticker": "RDW",
+      "session": "afternoon",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 13.81,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "ENPH_PUT_1778787312241",
+      "ticker": "ENPH",
+      "session": "afternoon",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 47.74,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "SLS_PUT_1778787312241",
+      "ticker": "SLS",
+      "session": "afternoon",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T19:35:12.241Z",
+      "startPrice": 7.57,
+      "dailyChanges": [],
+      "maxExcursionPct": 0,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 0,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "CONL_PUT_1778765999495",
+      "ticker": "CONL",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -5.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 8.32,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 9.65999984741211,
+          "pctChange": -16.11
+        }
+      ],
+      "maxExcursionPct": 1.5,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "LWLG_PUT_1778765999495",
+      "ticker": "LWLG",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 15.62,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 14.9350004196167,
+          "pctChange": 4.39
+        }
+      ],
+      "maxExcursionPct": 8.58,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "NBIS_PUT_1778765999495",
+      "ticker": "NBIS",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 213.95,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 221.14999389648438,
+          "pctChange": -3.37
+        }
+      ],
+      "maxExcursionPct": 2.9,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "LUNR_PUT_1778765999495",
+      "ticker": "LUNR",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 36.4,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 36.52000045776367,
+          "pctChange": -0.32
+        }
+      ],
+      "maxExcursionPct": 11.94,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "RKLB_PUT_1778765999495",
+      "ticker": "RKLB",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 124.42,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 132.5500030517578,
+          "pctChange": -6.53
+        }
+      ],
+      "maxExcursionPct": 2.5,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "PCT_PUT_1778765999495",
+      "ticker": "PCT",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 11.66,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 12.390000343322754,
+          "pctChange": -6.22
+        }
+      ],
+      "maxExcursionPct": 1.59,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "TQQQ_PUT_1778765999495",
+      "ticker": "TQQQ",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 78,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 78.94999694824219,
+          "pctChange": -1.22
+        }
+      ],
+      "maxExcursionPct": 1.08,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "COIN_PUT_1778765999495",
+      "ticker": "COIN",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 196.55,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 212,
+          "pctChange": -7.86
+        }
+      ],
+      "maxExcursionPct": 0.74,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "TEAM_PUT_1778765999495",
+      "ticker": "TEAM",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 80.7,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 80.86000061035156,
+          "pctChange": -0.2
+        }
+      ],
+      "maxExcursionPct": 3.1,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "DGXX_PUT_1778765999495",
+      "ticker": "DGXX",
+      "session": "morning",
+      "direction": "PUT",
+      "score": -4.5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T13:39:59.495Z",
+      "startPrice": 8.03,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-14",
+          "close": 7.21999979019165,
+          "pctChange": 10.09
+        }
+      ],
+      "maxExcursionPct": 13.89,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    }
+  ]
+}
