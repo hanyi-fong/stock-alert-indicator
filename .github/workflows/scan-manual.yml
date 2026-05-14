@@ -1,8 +1,18 @@
-name: Stock Scanner (API)
+name: Stock Scanner (Manual)
 
 on:
-  repository_dispatch:
-    types: [run-scan-api]
+  workflow_dispatch:
+    inputs:
+      full_scan:
+        description: 'Run Full Scan'
+        type: boolean
+        required: false
+        default: false
+      watchlist:
+        description: 'Comma separated WATCHLIST'
+        type: string
+        required: false
+        default: ''
 
 jobs:
   scan:
@@ -32,15 +42,8 @@ jobs:
           TASTYTRADE_CLIENT_SECRET: ${{ secrets.TASTYTRADE_CLIENT_SECRET }}
           TASTYTRADE_REFRESH_TOKEN: ${{ secrets.TASTYTRADE_REFRESH_TOKEN }}
           TASTYTRADE_WATCHLISTS: ${{ vars.TASTYTRADE_WATCHLISTS }}
-          WATCHLIST: ${{ vars.WATCHLIST }}
+          WATCHLIST: ${{ inputs.watchlist != '' && inputs.watchlist || vars.WATCHLIST }}
         run: |
-          SESSION="${{ github.event.client_payload.session || 'manual' }}"
-          npm run scan -- --session $SESSION --full-scan
-
-      - name: Commit history files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add history/
-          git commit -m "Auto-record scan history and verifications" || echo "No changes to commit"
-          git push
+          ARGS="--skip-history"
+          if [ "${{ github.event.inputs.full_scan }}" == "true" ]; then ARGS="$ARGS --full-scan"; fi
+          npm run scan -- $ARGS

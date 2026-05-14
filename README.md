@@ -167,13 +167,44 @@ Go to your GitHub repo → **Settings** → **Secrets and variables** → **Acti
 - `WATCHLIST`: Overrides the scan universe with a specific, comma-separated list of symbols (e.g., `AAPL,MSFT`).
 - `TASTYTRADE_WATCHLISTS`: Comma-separated list of TastyTrade public watchlists to use (set to `ALL` to scan all 2400+ symbols).
 
-The scanner will now run automatically at **9:35 AM and 3:30 PM ET, Monday–Friday**.
+### 6. Third-Party Scheduler Integration (REST API)
+To ensure reliable scheduling without relying on GitHub Actions cron delays, the automated workflows (`scan.yml` and `verify.yml`) are designed to be triggered via the GitHub REST API using a `repository_dispatch` event.
+
+**How to trigger via REST API:**
+1. Generate a **Personal Access Token (PAT)** in GitHub with `repo` permissions.
+2. Set up your third-party scheduler to make a `POST` request to:
+   `https://api.github.com/repos/<YOUR_OWNER>/<YOUR_REPO>/dispatches`
+3. Include the PAT in the Authorization header: `Authorization: Bearer <YOUR_PAT>`
+
+**Trigger a Morning Scan:**
+```json
+{
+  "event_type": "run-scan-api",
+  "client_payload": { "session": "morning" }
+}
+```
+
+**Trigger an Afternoon Scan:**
+```json
+{
+  "event_type": "run-scan-api",
+  "client_payload": { "session": "afternoon" }
+}
+```
+
+**Trigger the Verifier:**
+```json
+{
+  "event_type": "run-verify-api"
+}
+```
+
+*Note: The API-triggered scan (`run-scan-api`) will always perform a full scan (`--full-scan`) and automatically save the results to the `/history` directory.*
 
 ## Manual GitHub Action Run
-You can manually trigger the workflow anytime:
-Go to your GitHub repo → **Actions** → **Stock Scanner** → **Run workflow**
-- **Run Full Scan**: Bypasses the Fast Scan filter (Liquidity/IVR check).
-- **Save history to repository**: Set to `true` to record signals in the `/history` folder (triggers verification tracking). Set to `false` (default) for quick ad-hoc alerts.
+You can manually trigger ad-hoc scans anytime without saving history (safe for testing):
+Go to your GitHub repo → **Actions** → **Stock Scanner (Manual)** → **Run workflow**
+- **Run Full Scan**: Check to bypass the Fast Scan filter (Liquidity/IVR check).
 - **Comma separated WATCHLIST**: Temporarily override the scan universe with specific symbols.
 
 ## Disclaimer
