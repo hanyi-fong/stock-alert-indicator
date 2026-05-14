@@ -197,7 +197,7 @@ async function main() {
     const eventDate = event.timestamp;
 
     for (const signal of event.signals) {
-      const { ticker, direction, score, isEarningsPlay } = signal;
+      const { ticker, direction, score, isEarningsPlay, lastClose } = signal;
       const compositeKey = `${ticker}_${direction}`;
 
       // Check if there's already an open track for this ticker+direction from THIS SAME SESSION
@@ -228,7 +228,7 @@ async function main() {
         score,
         isEarningsPlay,
         dateDetected: eventDate.toISOString(),
-        startPrice: null,
+        startPrice: lastClose || null,
         dailyChanges: [],
         maxExcursionPct: 0,
         defaultTargetPct: DEFAULT_TARGET_PROFIT_PCT,
@@ -265,7 +265,7 @@ async function main() {
         let startIndex = candles.findIndex(c => c.date.getTime() >= detectionTime - 86400 * 1000);
         if (startIndex === -1) startIndex = 0;
 
-        const startPrice = candles[startIndex].close;
+        const startPrice = track.startPrice || candles[startIndex].close;
         track.startPrice = parseFloat(startPrice.toFixed(2));
 
         // Take up to MAX_TRACK_DAYS candles (20 days of data always)
