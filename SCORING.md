@@ -16,8 +16,8 @@ PUT signal     PUT   WATCH   CALL     CALL signal
 |---|---|---|
 | ≥ +3 | **CALL** 🟢 | Bullish — buy CALL |
 | ≤ −3 | **PUT** 🔴 | Bearish — buy PUT |
-| −2 to +2 | — | No clear signal (ignored) |
-| Earnings override | CALL or PUT | Even score ≥ |2| is alerted if earnings within 3 days |
+| −2 to +2 | **WATCH** ⚪ | No clear signal (ignored by default, but included if in `WATCHLIST` env var) |
+| Earnings override | CALL or PUT | Even score ≥ \|2\| is alerted if earnings within 3 days |
 
 > **Score cap:** The composite score is **hard-clamped to ±10** after all stages. The 1.5× earnings multiplier can push raw values above 10 (e.g. 9.5 × 1.5 = 14.25), but the displayed score will never exceed ±10.
 
@@ -309,6 +309,8 @@ Example: Score was +4.0 (CALL) with earnings in 2 days
 ## Output
 
 The scanner returns the **Top 10 signals** ranked by `|composite score|` (highest magnitude = most extreme / highest conviction setup).
+
+> **Watchlist Override:** Any tickers explicitly defined in the `WATCHLIST` environment variable are **always included** in the output, even if they fall outside the top 10. If they do not meet the minimum score threshold to be a CALL or PUT (score between -2 and +2) and have no earnings override, they will be labeled as **WATCH** ⚪.
 
 Each alert includes:
 - Direction (CALL 🟢 or PUT 🔴) and score
