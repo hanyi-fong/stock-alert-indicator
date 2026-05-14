@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-05-14T02:33:11.500Z",
+  "updatedAt": "2026-05-14T03:12:29.988Z",
   "maxTrackDays": 20,
   "defaultVerifyDays": 10,
   "defaultTargetPct": 30,
   "defaultStopLossPct": 30,
   "stats": {
-    "total": 10,
+    "total": 12,
     "completed": 0,
-    "open": 10,
+    "open": 12,
     "wins": 0,
     "losses": 0,
     "winRate": "0.00%",
@@ -17,6 +17,56 @@
     "expiredLoss": 0
   },
   "tracks": [
+    {
+      "trackId": "ACHV_PUT_1778728308025",
+      "ticker": "ACHV",
+      "direction": "PUT",
+      "score": -5,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T03:11:48.025Z",
+      "startPrice": 5.96,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 5.960000038146973,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 5.54,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
+    {
+      "trackId": "WDAY_PUT_1778728308025",
+      "ticker": "WDAY",
+      "direction": "PUT",
+      "score": -4.8,
+      "isEarningsPlay": false,
+      "dateDetected": "2026-05-14T03:11:48.025Z",
+      "startPrice": 116.5,
+      "dailyChanges": [
+        {
+          "day": 0,
+          "date": "2026-05-13",
+          "close": 116.5,
+          "pctChange": 0
+        }
+      ],
+      "maxExcursionPct": 3.39,
+      "defaultTargetPct": 30,
+      "defaultStopLossPct": 30,
+      "defaultExpiryDays": 10,
+      "status": "OPEN",
+      "daysHeld": 1,
+      "exitReason": null,
+      "triggerDay": null
+    },
     {
       "trackId": "RR_CALL_1778706586991",
       "ticker": "RR",
