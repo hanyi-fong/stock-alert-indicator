@@ -171,7 +171,9 @@ Go to your GitHub repo → **Settings** → **Secrets and variables** → **Acti
 To ensure reliable scheduling without relying on GitHub Actions cron delays, the automated workflows (`scan.yml` and `verify.yml`) are designed to be triggered via the GitHub REST API using a `repository_dispatch` event.
 
 **How to trigger via REST API:**
-1. Generate a **Personal Access Token (PAT)** in GitHub with `repo` permissions.
+1. Generate a **Personal Access Token (PAT)** in GitHub:
+   - **Fine-Grained Token (Recommended):** Set "Repository Access" to your scanner repo, and under "Repository permissions" set **Contents** to **Read and write**.
+   - **Classic Token:** Check the main **`repo`** scope.
 2. Set up your third-party scheduler to make a `POST` request to:
    `https://api.github.com/repos/<YOUR_OWNER>/<YOUR_REPO>/dispatches`
 3. Include the PAT in the Authorization header: `Authorization: Bearer <YOUR_PAT>`
