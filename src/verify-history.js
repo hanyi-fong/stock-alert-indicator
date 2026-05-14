@@ -224,6 +224,7 @@ async function main() {
       activeTracksById.set(trackId, {
         trackId,
         ticker,
+        session: event.session,
         direction,
         score,
         isEarningsPlay,
@@ -262,10 +263,24 @@ async function main() {
 
       if (candles.length > 0) {
         const detectionTime = new Date(track.dateDetected).getTime();
-        let startIndex = candles.findIndex(c => c.date.getTime() >= detectionTime - 86400 * 1000);
-        if (startIndex === -1) startIndex = 0;
+        
+        let startIndex;
+        if (track.session === "afternoon") {
+          // Afternoon scan: trade starts near market close. 
+          // The first day of performance tracking is the NEXT trading day.
+          startIndex = candles.findIndex(c => c.date.getTime() > detectionTime);
+        } else {
+          // Morning scan: trade starts near market open.
+          // The first day of performance tracking is the CURRENT trading day.
+          startIndex = candles.findIndex(c => c.date.getTime() + 86400 * 1000 > detectionTime);
+        }
 
-        const startPrice = track.startPrice || candles[startIndex].close;
+        if (startIndex === -1) {
+          // No future candles available yet
+          startIndex = candles.length;
+        }
+
+        const startPrice = track.startPrice || (startIndex < candles.length ? candles[startIndex].close : candles[candles.length - 1].close);
         track.startPrice = parseFloat(startPrice.toFixed(2));
 
         // Take up to MAX_TRACK_DAYS candles (20 days of data always)

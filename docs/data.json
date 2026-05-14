@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T03:43:46.403Z",
+  "updatedAt": "2026-05-14T04:03:53.344Z",
   "maxTrackDays": 20,
   "defaultVerifyDays": 10,
   "defaultTargetPct": 30,
@@ -20,6 +20,7 @@
     {
       "trackId": "RR_CALL_1778729712291",
       "ticker": "RR",
+      "session": "morning",
       "direction": "CALL",
       "score": 7,
       "isEarningsPlay": false,
@@ -33,7 +34,7 @@
           "pctChange": 0
         }
       ],
-      "maxExcursionPct": 7.62,
+      "maxExcursionPct": 7.8,
       "defaultTargetPct": 30,
       "defaultStopLossPct": 30,
       "defaultExpiryDays": 10,
@@ -45,6 +46,7 @@
     {
       "trackId": "FCX_CALL_1778729712291",
       "ticker": "FCX",
+      "session": "morning",
       "direction": "CALL",
       "score": 5.5,
       "isEarningsPlay": false,
@@ -70,6 +72,7 @@
     {
       "trackId": "RKLB_PUT_1778729712291",
       "ticker": "RKLB",
+      "session": "morning",
       "direction": "PUT",
       "score": -5.5,
       "isEarningsPlay": false,
@@ -95,6 +98,7 @@
     {
       "trackId": "AIRS_PUT_1778729712291",
       "ticker": "AIRS",
+      "session": "morning",
       "direction": "PUT",
       "score": -5.5,
       "isEarningsPlay": false,
@@ -120,6 +124,7 @@
     {
       "trackId": "F_CALL_1778729712291",
       "ticker": "F",
+      "session": "morning",
       "direction": "CALL",
       "score": 5,
       "isEarningsPlay": false,
@@ -145,6 +150,7 @@
     {
       "trackId": "ALIT_PUT_1778729712291",
       "ticker": "ALIT",
+      "session": "morning",
       "direction": "PUT",
       "score": -5,
       "isEarningsPlay": false,
@@ -154,11 +160,11 @@
         {
           "day": 0,
           "date": "2026-05-13",
-          "close": 0.7914999723434448,
-          "pctChange": 0
+          "close": 0.7919999957084656,
+          "pctChange": -0.06
         }
       ],
-      "maxExcursionPct": 13.81,
+      "maxExcursionPct": 13.83,
       "defaultTargetPct": 30,
       "defaultStopLossPct": 30,
       "defaultExpiryDays": 10,
@@ -170,6 +176,7 @@
     {
       "trackId": "CLSK_PUT_1778729712291",
       "ticker": "CLSK",
+      "session": "morning",
       "direction": "PUT",
       "score": -5,
       "isEarningsPlay": false,
@@ -195,6 +202,7 @@
     {
       "trackId": "ACHV_PUT_1778729712291",
       "ticker": "ACHV",
+      "session": "morning",
       "direction": "PUT",
       "score": -5,
       "isEarningsPlay": false,
@@ -220,6 +228,7 @@
     {
       "trackId": "WDAY_PUT_1778729712291",
       "ticker": "WDAY",
+      "session": "morning",
       "direction": "PUT",
       "score": -4.8,
       "isEarningsPlay": false,
@@ -245,6 +254,7 @@
     {
       "trackId": "CPB_PUT_1778729712291",
       "ticker": "CPB",
+      "session": "morning",
       "direction": "PUT",
       "score": -4.5,
       "isEarningsPlay": false,
@@ -258,7 +268,7 @@
           "pctChange": 0
         }
       ],
-      "maxExcursionPct": 1.25,
+      "maxExcursionPct": 1.23,
       "defaultTargetPct": 30,
       "defaultStopLossPct": 30,
       "defaultExpiryDays": 10,
