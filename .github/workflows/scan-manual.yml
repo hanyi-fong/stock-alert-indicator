@@ -1,4 +1,4 @@
-name: Stock Scanner (Manual)
+name: Stock Scanner
 
 on:
   workflow_dispatch:
