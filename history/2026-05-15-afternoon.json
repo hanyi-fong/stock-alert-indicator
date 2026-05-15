@@ -1,0 +1,621 @@
+{
+  "timestamp": "2026-05-15T19:35:24.575Z",
+  "session": "afternoon",
+  "signals": [
+    {
+      "ticker": "WDC",
+      "watchlists": [
+        "tasty IVR",
+        "NASDAQ 100"
+      ],
+      "score": -5.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "PUT-HEAVY",
+      "rsi": 65.9,
+      "macd": {
+        "macd": 42.1602,
+        "signal": 42.7098,
+        "hist": -0.5496
+      },
+      "dayChangePct": -1.52,
+      "volumeRatio": 0.61,
+      "volumeSpike": false,
+      "lastClose": 481.70001220703125,
+      "momentum5dPct": -6.62,
+      "atrPct": 5.98,
+      "adx": 40.6,
+      "adxRegime": "STRONG_TREND",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 80.04929899999999,
+      "ivIndex": 84.2955716,
+      "beta": 2.455602,
+      "liquidityRating": 2,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 1.634,
+      "chainDte": 7,
+      "expiryDate": "2026-05-22",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -6.6%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 6.0% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 80 🔥🔥 (very high)",
+          "score": -1.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 2.5 (high-amplitude)",
+          "score": -1
+        },
+        {
+          "indicator": "liquidity",
+          "message": "⚠️ Liquidity D (poor options liquidity)",
+          "score": 1.5
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 1.63 (put-heavy flow)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "GDX",
+      "watchlists": [
+        "High Options Volume",
+        "52 Week Near High"
+      ],
+      "score": -5.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "PUT-HEAVY",
+      "rsi": 42,
+      "macd": {
+        "macd": 0.5783,
+        "signal": 0.7354,
+        "hist": -0.1571
+      },
+      "dayChangePct": -6.35,
+      "volumeRatio": 1.2,
+      "volumeSpike": false,
+      "lastClose": 87.98500061035156,
+      "momentum5dPct": -9.85,
+      "atrPct": 4.41,
+      "adx": 12.7,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 55.8339859,
+      "ivIndex": 45.586531400000005,
+      "beta": 0.647186984,
+      "liquidityRating": 4,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 20.525,
+      "chainDte": 7,
+      "expiryDate": "2026-05-22",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -9.8%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 4.4% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 56 🔥 (high)",
+          "score": -1
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 20.52 (put-heavy flow)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "NEM",
+      "watchlists": [
+        "tasty IVR",
+        "52 Week Near High"
+      ],
+      "score": -5.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "PUT-HEAVY",
+      "rsi": 44.4,
+      "macd": {
+        "macd": 1.5951,
+        "signal": 1.8922,
+        "hist": -0.2971
+      },
+      "dayChangePct": -6.03,
+      "volumeRatio": 0.81,
+      "volumeSpike": false,
+      "lastClose": 109.31500244140625,
+      "momentum5dPct": -9.41,
+      "atrPct": 4.41,
+      "adx": 11.9,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 51.228174,
+      "ivIndex": 48.0020071,
+      "beta": 0.358166,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 2.973,
+      "chainDte": 7,
+      "expiryDate": "2026-05-22",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -9.4%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 4.4% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 51 🔥 (high)",
+          "score": -1
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 2.97 (put-heavy flow)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "SOXS",
+      "watchlists": [
+        "High Options Volume"
+      ],
+      "score": 5,
+      "direction": "CALL",
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 28.2,
+      "macd": {
+        "macd": -5.5856,
+        "signal": -6.3559,
+        "hist": 0.7703
+      },
+      "dayChangePct": 9.31,
+      "volumeRatio": 1.67,
+      "volumeSpike": false,
+      "lastClose": 9.039999961853027,
+      "momentum5dPct": 10.24,
+      "atrPct": 19.14,
+      "adx": 36.5,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 83.2720963,
+      "ivIndex": 154.7625346,
+      "beta": -4.977470991,
+      "liquidityRating": 4,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
+      "reasons": [
+        {
+          "indicator": "rsi",
+          "message": "RSI oversold (28.2) (+1) — trending mkt, no divergence"
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum +10.2%",
+          "score": 1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 19.1% (high volatility)",
+          "score": 0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 83 🔥🔥 (very high)",
+          "score": 1.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta -5.0 (high-amplitude)",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "ticker": "FOXA",
+      "watchlists": [
+        "tasty IVR"
+      ],
+      "score": -5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "PUT-HEAVY",
+      "rsi": 54.3,
+      "macd": {
+        "macd": 1.2476,
+        "signal": 1.3238,
+        "hist": -0.0762
+      },
+      "dayChangePct": -1.47,
+      "volumeRatio": 0.47,
+      "volumeSpike": false,
+      "lastClose": 64.36000061035156,
+      "momentum5dPct": -4.96,
+      "atrPct": 2.72,
+      "adx": 28.3,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 59.138655500000006,
+      "ivIndex": 36.8714552,
+      "beta": 0.605775,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 3.337,
+      "chainDte": 34,
+      "expiryDate": "2026-06-18",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -5.0%",
+          "score": -1
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 59 🔥 (high)",
+          "score": -1
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 3.34 (put-heavy flow)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "COP",
+      "watchlists": [
+        "S&P 100"
+      ],
+      "score": 5,
+      "direction": "CALL",
+      "isEarningsPlay": false,
+      "pcrSignal": "CALL-HEAVY",
+      "rsi": 52.9,
+      "macd": {
+        "macd": -1.9858,
+        "signal": -2.281,
+        "hist": 0.2952
+      },
+      "dayChangePct": 2.73,
+      "volumeRatio": 0.48,
+      "volumeSpike": false,
+      "lastClose": 122.21499633789062,
+      "momentum5dPct": 5.77,
+      "atrPct": 2.83,
+      "adx": 11.7,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 57.439824900000005,
+      "ivIndex": 33.8718423,
+      "beta": 0.192578643,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 0.494,
+      "chainDte": 7,
+      "expiryDate": "2026-05-22",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bullish crossover",
+          "score": 2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum +5.8%",
+          "score": 1
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 57 🔥 (high)",
+          "score": 1
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 0.49 (call-heavy flow)",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "ticker": "COIN",
+      "watchlists": [
+        "High Options Volume"
+      ],
+      "score": -5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 48.6,
+      "macd": {
+        "macd": 4.6614,
+        "signal": 4.7569,
+        "hist": -0.0955
+      },
+      "dayChangePct": -7.47,
+      "volumeRatio": 1.12,
+      "volumeSpike": false,
+      "lastClose": 196.1750030517578,
+      "momentum5dPct": -9.43,
+      "atrPct": 7.25,
+      "adx": 12.9,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 49.670563200000004,
+      "ivIndex": 73.1588086,
+      "beta": 4.402927,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -9.4%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 7.3% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 50 (elevated)",
+          "score": -0.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 4.4 (high-amplitude)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "JMIA",
+      "watchlists": [
+        "52 Week Near High"
+      ],
+      "score": -5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 46.6,
+      "macd": {
+        "macd": 0.1258,
+        "signal": 0.157,
+        "hist": -0.0312
+      },
+      "dayChangePct": -3.75,
+      "volumeRatio": 0.42,
+      "volumeSpike": false,
+      "lastClose": 7.054999828338623,
+      "momentum5dPct": -6.06,
+      "atrPct": 8.03,
+      "adx": 15.9,
+      "adxRegime": "RANGING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 36.1883154,
+      "ivIndex": 83.8806539,
+      "beta": 4.183099,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "momentum",
+          "message": "5d momentum -6.1%",
+          "score": -1
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 8.0% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 36 (elevated)",
+          "score": -0.5
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 4.2 (high-amplitude)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "NBIS",
+      "watchlists": [
+        "High Options Volume",
+        "52 Week Near High"
+      ],
+      "score": -4.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": null,
+      "rsi": 72,
+      "macd": {
+        "macd": 21.2901,
+        "signal": 17.4511,
+        "hist": 3.839
+      },
+      "dayChangePct": 0.28,
+      "volumeRatio": 1.17,
+      "volumeSpike": false,
+      "lastClose": 221.77999877929688,
+      "momentum5dPct": 19.17,
+      "atrPct": 7.37,
+      "adx": 35.3,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 94.6672543,
+      "ivIndex": 111.9682126,
+      "beta": 2.588262613,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": null,
+      "chainDte": null,
+      "expiryDate": null,
+      "reasons": [
+        {
+          "indicator": "rsi",
+          "message": "RSI overbought (72.0) (-1) — trending mkt, no divergence"
+        },
+        {
+          "indicator": "momentum",
+          "message": "⚠️ Overextended (+19.2% in 5d) — exhaustion risk",
+          "score": -2
+        },
+        {
+          "indicator": "coherence",
+          "message": "⚠️ Conflicting signals: momentum bullish (+19.2%) but RSI overbought (72) — mixed conviction"
+        },
+        {
+          "indicator": "atr",
+          "message": "ATR 7.4% (high volatility)",
+          "score": -0.5
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 95 🔥🔥 (very high) neutralized (stock overextended)"
+        },
+        {
+          "indicator": "beta",
+          "message": "Beta 2.6 (high-amplitude)",
+          "score": -1
+        }
+      ]
+    },
+    {
+      "ticker": "MTUM",
+      "watchlists": [
+        "High Options Volume"
+      ],
+      "score": -4.5,
+      "direction": "PUT",
+      "isEarningsPlay": false,
+      "pcrSignal": "PUT-HEAVY",
+      "rsi": 64.3,
+      "macd": {
+        "macd": 12.515,
+        "signal": 12.5518,
+        "hist": -0.0368
+      },
+      "dayChangePct": -2.5,
+      "volumeRatio": 1.08,
+      "volumeSpike": false,
+      "lastClose": 299.57501220703125,
+      "momentum5dPct": -2.31,
+      "atrPct": 2.06,
+      "adx": 32.4,
+      "adxRegime": "TRENDING",
+      "rsiDivergence": false,
+      "rsiDivergenceType": null,
+      "ivr": 81.0577442,
+      "ivIndex": 30.3222359,
+      "beta": 1.058280155,
+      "liquidityRating": 3,
+      "earningsNextDate": null,
+      "daysToEarnings": null,
+      "pcr": 14.332,
+      "chainDte": 34,
+      "expiryDate": "2026-06-18",
+      "reasons": [
+        {
+          "indicator": "macd",
+          "message": "MACD bearish crossover",
+          "score": -2
+        },
+        {
+          "indicator": "ivr",
+          "message": "IVR 81 🔥🔥 (very high)",
+          "score": -1.5
+        },
+        {
+          "indicator": "pcr",
+          "message": "PCR 14.33 (put-heavy flow)",
+          "score": -1
+        }
+      ]
+    }
+  ]
+}
